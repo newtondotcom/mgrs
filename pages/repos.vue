@@ -9,9 +9,16 @@
         icon: 'i-heroicons-square-3-stack-3d'
         }]
 
-      onMounted(() => {
-        toast.add({ title: 'Welcome to mgrs!' })
-      })
+        const signOut = async () => {
+            const { error } = await supabase.auth.signOut()
+            if (error) {
+                toast.error('Error signing out')
+            } else {
+                navigateTo('/')
+            }
+        }
+            
+      
 </script>
 
 
