@@ -12,5 +12,16 @@ export default defineNuxtConfig({
   supabase: {
     redirect: true,
   },
+  runtimeConfig: {
+    public : {
+      GITHUB_CLIENT_ID : process.env.GITHUB_CLIENT_ID,
+      GITHUB_CLIENT_SECRET : process.env.GITHUB_CLIENT_SECRET,
+    },
+  },
+  routeRules: {
+    'oauth/**': {
+      proxy: 'https://github.com/login/oauth/**',
+    }
+  }
 })
   
