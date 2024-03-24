@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@nuxt/ui": "^2.14.2",
+    "@octokit/core": "^6.0.1",
     "autoprefixer": "^10.4.19",
     "nuxt": "^3.11.1",
     "postcss": "^8.4.38",
