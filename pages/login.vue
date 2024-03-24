@@ -2,7 +2,7 @@
 const supabase = useSupabaseClient()
 const email = ref('')
 
-const signInWithOtp = async () => {
+const signInWithGithub = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'github',
     options: {
@@ -12,14 +12,8 @@ const signInWithOtp = async () => {
     if (error) console.log(error)
 }
 </script>
-<template>
-  <div>
-    <button @click="signInWithOtp">
-      Sign In with E-Mail
-    </button>
-    <input
-      v-model="email"
-      type="email"
-    />
-  </div>
+<template>  
+<div class="text-center align-middle justify-center h-full w-full">
+    <UButton @click="signInWithGithub">Sign In with Github</UButton>
+</div>
 </template>
