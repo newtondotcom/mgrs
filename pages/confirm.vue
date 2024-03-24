@@ -3,7 +3,6 @@ const user = useSupabaseUser()
 
 watch(user, () => {
   if (user.value) {
-      // Redirect to protected page
       return navigateTo('/repos')
   }
 }, { immediate: true })
