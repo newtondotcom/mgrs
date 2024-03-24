@@ -8,16 +8,9 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ['@nuxtjs/supabase'],
+  modules: ['@nuxtjs/supabase','@nuxt/ui'],
   supabase: {
     redirect: true,
-    redirectOptions: {
-      login: '/login',
-      callback: '/confirm',
-      include: undefined,
-      exclude: [],
-      cookieRedirect: false,
-    }
   },
 })
   
