@@ -1,7 +1,6 @@
 import { serverSupabaseClient,serverSupabaseUser  } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
-    console.log("Github API")
     const config = useRuntimeConfig(event)
     const query = getQuery(event)
 
@@ -22,8 +21,6 @@ export default defineEventHandler(async (event) => {
         "Accept": "application/json",
         "Accept-Encoding": "application/json",
       },})
-
-    console.log(data)
     
       if (data.access_token) {
       let access_token = "";
@@ -52,6 +49,6 @@ export default defineEventHandler(async (event) => {
         };
         }
         return {
-          error : "No access",
+          access_token : "error"
         };
     });
