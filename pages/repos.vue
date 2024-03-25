@@ -53,27 +53,31 @@ onMounted(async () => {
 
 <template>
   <div class="text-center">
-    <h1 class="text-4xl font-bold">Repos</h1>
-    <UBreadcrumb :links="links" />
-    <div class="flex flex-col items-center">
-      <div v-if="datas.length === 0">
-      <div v-for="n in 30" :key="n">
-        <div class="flex items-center space-x-4">
-          <USkeleton class="h-12 w-12" :ui="{ rounded: 'rounded-full' }" />
-          <div class="space-y-2">
-            <USkeleton class="h-4 w-[250px]" />
-            <USkeleton class="h-4 w-[200px]" />
+    <h1 class="text-4xl font-bold">Repositories</h1>
+    <UBreadcrumb :links="links" class="mb-6 ml-6" />
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6">
+      <template v-if="datas.length === 0">
+        <div v-for="n in 6" :key="n" class="border border-gray-300 bg-gray-100 p-4 rounded-md">
+          <div class="flex items-center space-x-4">
+            <USkeleton class="h-12 w-12" :ui="{ rounded: 'rounded-full' }" />
+            <div class="space-y-2">
+              <USkeleton class="h-4 w-[250px]" />
+              <USkeleton class="h-4 w-[200px]" />
+            </div>
           </div>
         </div>
-        </div>
-      </div>
-      <div v-else>
-        <div v-for="data in printedDatas" :key="data.id">
+      </template>
+      <template v-else>
+        <div v-for="data in printedDatas" 
+          :key="data.id" 
+          @click="navigateTo('/repo/' + data.id)"
+          class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer">
           {{ data.name }}
         </div>
-      </div>
+      </template>
     </div>
-
-    <UPagination v-model="page" :page-count="pagecount" :total="datas.length" :ui="{ rounded: 'first-of-type:rounded-s-md last-of-type:rounded-e-md' }"/>
+    <div class="flex justify-center mt-6">
+      <UPagination v-model="page" :page-count="pagecount" :total="datas.length" :ui="{ rounded: 'first-of-type:rounded-s-md last-of-type:rounded-e-md' }"/>
+    </div>
   </div>
 </template>
