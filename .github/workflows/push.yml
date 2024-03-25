@@ -1,11 +1,11 @@
 name: Build DEV
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-
+  #push:
+    #branches:
+      #- main
+  workflow_dispatch: 
+  
 jobs:
   push-image-to-docker-hub:
     runs-on: ubuntu-latest  
