@@ -18,10 +18,13 @@ export default defineNuxtConfig({
       GITHUB_CLIENT_SECRET : process.env.GITHUB_CLIENT_SECRET,
     },
   },
-  routeRules: {
-    'oauth/**': {
-      proxy: 'https://github.com/login/oauth/**',
-    }
-  }
+  security: {
+    corsHandler: {
+      origin : '*',
+      methods : ['GET','POST','PUT','DELETE'],
+      allowedHeaders : '*',
+      exposeHeaders : '*',
+    },
+  },
 })
   

@@ -1,29 +1,26 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref,onMounted } from 'vue';
 
-const config = useRuntimeConfig()
-const route = useRoute().query
-const code = route.code
-const link = "https://github.com/login/oauth/access_token" 
+const config = useRuntimeConfig();
+const route = useRoute().query;
+const code = route.code;
 
-const params = {
-  client_id: config.public.GITHUB_CLIENT_ID,
-  client_secret: config.public.GITHUB_CLIENT_SECRET,
-  code: code
-}
+const access_token_cookie = useCookie('access_token', "");
 
-const tokenResponse = ref(null)
+const {access_token} = await useFetch({
+    url: '/api/github',
+    method: 'POST',
+    headers: {
+        'Cache-Control': 'no-cache',
+    },
+    data: { code }
+});
+access_token_cookie.value = access_token;
 
-const { data, pending, error, refresh } = await useFetch("oauth/access_token", 
-{query: params, method: 'POST'})
-console.log(data)
 </script>
 
 <template>
   <div>
-    <h1>GitHub Token</h1>
-    <div v-if="tokenResponse">
-      <!-- Display tokenResponse data here -->
-    </div>
+    <h1>GitHub access_token Token</h1>
   </div>
 </template>
