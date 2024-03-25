@@ -5,6 +5,11 @@ export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig(event)
     const query = getQuery(event)
 
+    if (!query.code) {
+      return {
+        error: "No code",
+      };
+    }
     const params = {
       client_id: config.public.GITHUB_CLIENT_ID,
       client_secret: config.public.GITHUB_CLIENT_SECRET,
