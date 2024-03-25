@@ -8,8 +8,8 @@ const access_token_cookie = useCookie('access_token');
 const {data} = await useFetch('/api/github',{
     params: { code : code },
 });
-
 access_token_cookie.value = data.value.access_token;
+navigateTo('/repos');
 </script>
 
 <template>
