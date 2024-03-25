@@ -70,7 +70,7 @@ onMounted(async () => {
       <template v-else>
         <div v-for="data in printedDatas" 
           :key="data.id" 
-          @click="navigateTo('/repo/' + data.id)"
+          @click="navigateTo('/repo/' + data.name)"
           class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer">
           {{ data.name }}
         </div>
