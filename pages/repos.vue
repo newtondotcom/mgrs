@@ -4,6 +4,9 @@ import { ref } from 'vue'
 
 const toast = useToast()
 
+const page = ref(1)
+const pagecount = ref(20)
+
 const links = [{
   label: 'Home',
   icon: 'i-heroicons-home',
@@ -15,31 +18,28 @@ const links = [{
 
 const access_token_cookie = useCookie('access_token')
 
-const signOut = async () => {
-  const { error } = await supabase.auth.signOut()
-  if (error) {
-    toast.error('Error signing out')
-  } else {
-    navigateTo('/')
-  }
-}
-
 const octokit = new Octokit({
   auth: access_token_cookie.value
 })
 
 const datas = ref([]);
+const printedDatas = ref([]);
 
-async function getRepositoriesList(number: number) {
+watch([page], () => {
+  printedDatas.value = datas.value.slice((page.value - 1) * pagecount.value, page.value * pagecount.value)
+})
+
+async function getRepositoriesList() {
   try {
     const response = await octokit.request('GET /user/repos', {
       headers: {
         'X-GitHub-Api-Version': '2022-11-28'
       },
-      per_page: 30,
-      page: number
+      per_page: 1000,
+      visibility: 'all',
     })
     datas.value = response.data
+    printedDatas.value = datas.value.slice(0, pagecount.value)
   } catch (error) {
     console.error('Error fetching repositories:', error)
     toast.error('Error fetching repositories')
@@ -47,7 +47,7 @@ async function getRepositoriesList(number: number) {
 }
 
 onMounted(async () => {
-  await getRepositoriesList(1);
+  await getRepositoriesList();
 })
 </script>
 
@@ -68,15 +68,12 @@ onMounted(async () => {
         </div>
       </div>
       <div v-else>
-        <div v-for="data in datas" :key="data.id">
+        <div v-for="data in printedDatas" :key="data.id">
           {{ data.name }}
         </div>
       </div>
     </div>
-    <div class="mt-4">
-      <UButton @click="signOut" class="bg-red-500">
-        Sign Out
-      </UButton>
-    </div>
+
+    <UPagination v-model="page" :page-count="pagecount" :total="datas.length" :ui="{ rounded: 'first-of-type:rounded-s-md last-of-type:rounded-e-md' }"/>
   </div>
 </template>

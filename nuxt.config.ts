@@ -26,5 +26,6 @@ export default defineNuxtConfig({
       exposeHeaders : '*',
     },
   },
+  ssr : false,
 })
   
