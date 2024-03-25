@@ -2,6 +2,10 @@
 
 Manage Github Repositories Secrets
 
+## TODO
+
+- [ ] Automatize because user needs to manually install the app to provide access to all repositories
+
 ## Setup
 
 Make sure to install the dependencies:
