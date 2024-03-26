@@ -16,6 +16,7 @@ const links = [{
 }]
 
 const noSecret = ref(false)
+const isOpen = ref(false)
 
 const access_token_cookie = useCookie('access_token')
 
@@ -66,7 +67,6 @@ await octokit.request('PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}',
 
 <template>
   <div class="text-center">
-    <h1 class="text-4xl font-bold">Repositories</h1>
     <UBreadcrumb :links="links" class="mb-6 ml-6" />
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 lg:py-[60px] lg:px-[100px]">
       <div v-if="noSecret" class="border border-gray-300 bg-gray-100 p-4 rounded-md mb-4">
@@ -94,9 +94,19 @@ await octokit.request('PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}',
         </div>
       </template>
         <div class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer mb-4">
-            +
+            <UButton @click="isOpen=true" icon="i-heroicons-plus-16-solid" size="sm" color="primary" square variant="solid" />
         </div>
     </div>
   </div>
+
+  <UModal v-model="isOpen">
+    <div class="px-10 py-8">
+      <UInput class="my-2" color="primary" variant="outline" placeholder="Name" />
+      <UInput class="my-2" color="primary" variant="outline" placeholder="Value" />
+      <div class="flex justify-end">
+        <UButton label="Button" />
+      </div>
+    </div>
+  </UModal>
 </template>
 
