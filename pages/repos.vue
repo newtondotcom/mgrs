@@ -70,7 +70,7 @@ onMounted(async () => {
       </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:py-[60px] lg:px-[100px]">
       <template v-if="datas.length === 0">
-        <div v-for="n in 6" :key="n" class="border border-gray-300 bg-gray-100 p-4 rounded-md">
+        <div v-for="n in pagecount.value" :key="n" class="border border-gray-300 bg-gray-100 p-4 rounded-md">
           <div class="flex items-center space-x-4">
             <USkeleton class="h-12 w-12" :ui="{ rounded: 'rounded-full' }" />
             <div class="space-y-2">
