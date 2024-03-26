@@ -63,7 +63,6 @@ onMounted(async () => {
 
 <template>
   <div class="text-center">
-    <h1 class="text-4xl font-bold">Repositories</h1>
     <UBreadcrumb :links="links" class="mb-6 ml-6" />
       <div class="flex flex-row justify-center w-min-screen w-full">
       <UInput class="align-end" color="gray" variant="outline" placeholder="Search..." v-model="search" />
