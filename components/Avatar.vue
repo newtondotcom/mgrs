@@ -1,11 +1,8 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
   <UPopover>
-  <UButton label="Button" color="gray">
+  <UButton color="gray">
     <template #leading>
+    <div class="pl-4">newtondotcom</div>
   <UAvatar
     chip-color="primary"
     chip-text=""
@@ -17,9 +14,8 @@
     </template>
   </UButton>
     <template #panel>
-      <div class="p-4">
-        <Placeholder class="h-20 w-48" />
-      </div>
+          <button class="px-3 py-2 block text-gray-500 transition hover:text-gray-500/75"> Revoke Permissions</button>
+          <button class="px-3 py-2 block text-gray-500 transition hover:text-gray-500/75"> Log out </button>
     </template>
   </UPopover>
 </template>
