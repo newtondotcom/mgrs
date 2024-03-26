@@ -13,7 +13,8 @@ const links = [{
   to: '/'
 }, {
   label: 'Repositories',
-  icon: 'i-heroicons-square-3-stack-3d'
+  icon: 'i-heroicons-square-3-stack-3d',
+  to: '/repos'
 }]
 
 const access_token_cookie = useCookie('access_token')
@@ -24,22 +25,31 @@ const octokit = new Octokit({
 
 const datas = ref([]);
 const printedDatas = ref([]);
+const search = ref('')
+const length = ref(0)
 
 watch([page], () => {
   printedDatas.value = datas.value.slice((page.value - 1) * pagecount.value, page.value * pagecount.value)
 })
 
+watch([search], () => {  
+  page.value = 1
+  printedDatas.value = datas.value.filter((data) => data.name.toLowerCase().includes(search.value.toLowerCase())).slice((page.value - 1) * pagecount.value, page.value * pagecount.value)
+  length.value = datas.value.filter((data) => data.name.toLowerCase().includes(search.value.toLowerCase())).length
+})
+
 async function getRepositoriesList() {
   try {
     const response = await octokit.request('GET /user/repos', {
+      type : "owner",
       headers: {
         'X-GitHub-Api-Version': '2022-11-28'
       },
       per_page: 1000,
-      visibility: 'all',
     })
     datas.value = response.data
     printedDatas.value = datas.value.slice(0, pagecount.value)
+    length.value = datas.value.length
   } catch (error) {
     console.error('Error fetching repositories:', error)
     toast.error('Error fetching repositories')
@@ -55,7 +65,10 @@ onMounted(async () => {
   <div class="text-center">
     <h1 class="text-4xl font-bold">Repositories</h1>
     <UBreadcrumb :links="links" class="mb-6 ml-6" />
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6">
+      <div class="flex flex-row justify-center w-min-screen w-full">
+      <UInput class="align-end" color="gray" variant="outline" placeholder="Search..." v-model="search" />
+      </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:py-[60px] lg:px-[100px]">
       <template v-if="datas.length === 0">
         <div v-for="n in 6" :key="n" class="border border-gray-300 bg-gray-100 p-4 rounded-md">
           <div class="flex items-center space-x-4">
@@ -77,7 +90,7 @@ onMounted(async () => {
       </template>
     </div>
     <div class="flex justify-center mt-6">
-      <UPagination v-model="page" :page-count="pagecount" :total="datas.length" :ui="{ rounded: 'first-of-type:rounded-s-md last-of-type:rounded-e-md' }"/>
+      <UPagination v-model="page" :page-count="pagecount" :total="length" :ui="{ rounded: 'first-of-type:rounded-s-md last-of-type:rounded-e-md' }"/>
     </div>
   </div>
 </template>
