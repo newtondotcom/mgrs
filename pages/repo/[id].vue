@@ -28,6 +28,7 @@ let repoPublicKey = ""
 let repoKeyId = ""
 
 const access_token_cookie = useCookie('access_token')
+const username_cookie = useCookie('username');
 
 const octokit = new Octokit({
   auth: access_token_cookie.value
@@ -39,7 +40,7 @@ const secrets = ref([]);
 async function getSecretsList() {
   try {
     const response = await octokit.request('GET /repos/{owner}/{repo}/actions/secrets', {
-      owner: "newtondotcom",
+      owner: username_cookie.value,
       repo: name,
       headers: {
         'X-GitHub-Api-Version': '2022-11-28',
@@ -58,7 +59,7 @@ async function getSecretsList() {
 async function getPublicKey() {
   try {
     const response = await octokit.request('GET /repos/{owner}/{repo}/actions/secrets/public-key', {
-      owner: "newtondotcom",
+      owner: username_cookie.value,
       repo: name,
       headers: {
         'X-GitHub-Api-Version': '2022-11-28'
@@ -112,27 +113,14 @@ async function addSecret() {
     } catch (error) {
       console.error('Error adding secret:', error)
     }
+    toast.add({ title: 'Success', description: 'Secret added', status: 'success' })
     modalLoading = false
+    isOpen.value = false
   }
 
 onMounted(async () => {
   await getSecretsList();
 })
-
-
-
-/* 
-await octokit.request('PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}', {
-  owner: "newtondotcom",
-  repo: name,
-  secret_name: "test",
-  encrypted_value: 'c2VjcmV0',
-  key_id: '012345678912345678',
-  headers: {
-    'X-GitHub-Api-Version': '2022-11-28'
-  }
-})
-*/
 </script>
 
 <template>
