@@ -7,5 +7,7 @@ const useGithubApp = async () => {
 </script>
 
 <template>
-<UButton @click="useGithubApp">Allow us to manage your Github secrets</UButton>
+  <div class="w-full h-full flex justify-center items-center">
+    <UButton @click="useGithubApp">Allow us to manage your Github secrets</UButton>
+  </div>
 </template>
