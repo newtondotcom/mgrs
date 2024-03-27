@@ -41,8 +41,17 @@ export default defineEventHandler(async (event) => {
     })
     */
 
+    const response = await $fetch("https://api.github.com/user", {
+      headers: {
+        "Authorization": `Bearer ${access_token}`,
+        "Accept": "application/json",
+        "Accept-Encoding": "application/json",
+      },
+    })
+
     return {
       access_token: data.access_token,
+      username : response.login,
     };
   }
   return {
