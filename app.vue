@@ -254,4 +254,6 @@ if (user.value) {
   </div>
 </footer>
 
+<UNotifications />
+
 </template>
