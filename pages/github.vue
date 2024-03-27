@@ -4,11 +4,13 @@ const route = useRoute().query;
 const code = route.code;
 
 const access_token_cookie = useCookie('access_token');
+const username_cookie = useCookie('username');
 
 const {data} = await useFetch('/api/github',{
     params: { code : code },
 });
 access_token_cookie.value = data.value.access_token;
+username_cookie.value = data.value.username;
 navigateTo('/repos');
 </script>
 
