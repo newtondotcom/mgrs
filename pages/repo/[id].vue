@@ -2,6 +2,7 @@
 import { Octokit } from "@octokit/core";
 const toast = useToast()
 const route = useRoute()
+import sodium from "libsodium-wrappers";
 const name = route.params.id
 const links = [{
         label: 'Home',
@@ -19,9 +20,12 @@ const links = [{
 const noSecret = ref(false)
 const isOpen = ref(false)
 
-const modalValue = ref("")
-const modalName = ref("")
-const modalLoading = ref(false)
+let modalValue = ""
+let modalName = ""
+let modalLoading = false
+
+let repoPublicKey = ""
+let repoKeyId = ""
 
 const access_token_cookie = useCookie('access_token')
 
@@ -51,33 +55,64 @@ async function getSecretsList() {
   }
 }
 
+async function getPublicKey() {
+  try {
+    const response = await octokit.request('GET /repos/{owner}/{repo}/actions/secrets/public-key', {
+      owner: "newtondotcom",
+      repo: name,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    })
+    const key = response.data
+    repoPublicKey = key.key
+    repoKeyId = key.key_id
+  } catch (error) {
+    console.error('Error fetching public key:', error)
+  }
+}
+
+async function convertUsingSodiumAndPush() {
+  await sodium.ready;
+  let binkey = sodium.from_base64(repoPublicKey, sodium.base64_variants.ORIGINAL)
+  let binsec = sodium.from_string(modalValue)
+  let encBytes = sodium.crypto_box_seal(binsec, binkey)
+  let encryptedValue = sodium.to_base64(encBytes, sodium.base64_variants.ORIGINAL)
+  const response = await octokit.request('PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}', {
+    owner: "newtondotcom",
+    repo: name,
+    secret_name: modalName,
+    encrypted_value: encryptedValue,
+    key_id: repoKeyId,
+    headers: {
+      'X-GitHub-Api-Version': '2022-11-28'
+    }
+  })
+  if (response.status === 201) {
+    console.log('Secret added')
+  }
+}
+
 async function addSecret() {
-  modalLoading.value = true
-  if (modalName.value === "" || modalValue.value === "") {
+  modalLoading = true
+  if (modalName === "" || modalValue === "") {
     toast.add({ title: 'Error', description: 'Name and value are required', status: 'error' })
     modalLoading.value = false
     return
   }
   try {
-    /*
-    const response = await octokit.request('PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}', {
-      owner: "newtondotcom",
-      repo: name,
-      secret_name: "test",
-      encrypted_value: 'c2VjcmV0',
-      key_id: '012345678912345678',
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }*/
+    if (repoPublicKey === "") {
+      await getPublicKey()
+    }
+    const encryptedValue = await convertUsingSodiumAndPush()
       // ad supabase
       datas.value.push({
-        name: modalName.value,
+        name: modalName,
       })
-      console.log('Secret added')
     } catch (error) {
       console.error('Error adding secret:', error)
     }
-    modalLoading.value = false
+    modalLoading = false
   }
 
 onMounted(async () => {
