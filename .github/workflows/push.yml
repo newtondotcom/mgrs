@@ -9,10 +9,14 @@ jobs:
     strategy:
       matrix:
         platform: [linux/amd64, linux/arm64]
-        secret_id: [SUPABASE_URL, SUPABASE_KEY]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      
+      - name: Create .env file
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
       
       - name: Docker login
         run: |
@@ -24,5 +28,5 @@ jobs:
             --file Dockerfile \
             --tag ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_TAG_DEV }} \
             --platform ${{ matrix.platform }} \
-            $(for id in "${{ matrix.secret_id }}"; do echo "--secret id=$id,src=${{ secrets.$id }}"; done)
+            --secret id=.env,src=.env
           docker push ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_TAG_DEV }}
