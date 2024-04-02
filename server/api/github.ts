@@ -10,8 +10,8 @@ export default defineEventHandler(async (event) => {
     };
   }
   const params = {
-    client_id: config.public.GITHUB_CLIENT_ID,
-    client_secret: config.public.GITHUB_CLIENT_SECRET,
+    client_id: config.public.GH_CLIENT_ID,
+    client_secret: config.public.GH_CLIENT_SECRET,
     code: query.code
   }
 

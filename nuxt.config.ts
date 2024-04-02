@@ -14,8 +14,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public : {
-      GITHUB_CLIENT_ID : process.env.GITHUB_CLIENT_ID,
-      GITHUB_CLIENT_SECRET : process.env.GITHUB_CLIENT_SECRET,
+      GH_CLIENT_ID : process.env.GH_CLIENT_ID,
+      GH_CLIENT_SECRET : process.env.GH_CLIENT_SECRET,
     },
   },
   security: {
