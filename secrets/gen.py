@@ -12,9 +12,9 @@ def get_secrets_array():
 
 def gen_params_workflow(secrets):
     s = ""
-    indent = "  " # 4 spaces for proper YAML indentation
+    indent = "  " # 2 spaces for proper YAML indentation
     for secret in secrets:
-        s += f"{indent}{indent}{indent}{indent}{indent}echo \"{secret}=${{ secrets.{secret} }}\" >> .env\n"
+        s += f"{indent}{indent}{indent}{indent}{indent}echo \"{secret}={{{{ secrets.{secret} }}}}\" >> .env\n"
     return s
 
 def gen_files():
