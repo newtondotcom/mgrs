@@ -18,15 +18,19 @@ jobs:
           echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
           echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
       
-      - name: Docker login
-        run: |
-          docker login ${{ secrets.DOCKER_REGISTRY }} -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASS }}
-      
-      - name: Build and push Docker image
+      - name: Build  Docker image
         run: |
           docker build . \
             --file Dockerfile \
             --tag ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_TAG_DEV }} \
             --platform ${{ matrix.platform }} \
             --secret id=.env,src=.env
+        
+      
+      - name: Docker login
+        run: |
+          docker login ${{ secrets.DOCKER_REGISTRY }} -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASS }}
+          
+      - name: Push Docker image
+        run: |
           docker push ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_TAG_DEV }}
