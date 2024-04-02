@@ -94,6 +94,17 @@ async function convertUsingSodiumAndPush() {
   }
 }
 
+async function removeSecret(){
+  await octokit.request('DELETE /repos/{owner}/{repo}/actions/secrets/{secret_name}', {
+  owner: username_cookie.value,
+  repo: name,
+  secret_name: modalName,
+  headers: {
+    'X-GitHub-Api-Version': '2022-11-28'
+  }
+})
+}
+
 async function addSecret() {
   modalLoading = true
   if (modalName === "" || modalValue === "") {
