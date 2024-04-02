@@ -9,10 +9,9 @@ secrets = []
 def get_secrets_array():
     print(env_file)
     with open(env_file, 'r') as f:
-        secretsl = f.readlines()
-        secretsl = [secret.strip().split("=")[0] for secret in secrets]
-        print(secretsl)
-        return secretsl
+        secrets = f.readlines()
+        secrets = [secret.strip().split("=")[0] for secret in secrets]
+        return secrets
     
 
 def gen_params_dockerfile():
