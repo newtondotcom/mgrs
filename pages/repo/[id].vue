@@ -5,20 +5,21 @@ const route = useRoute()
 import sodium from "libsodium-wrappers";
 const name = route.params.id
 const links = [{
-        label: 'Home',
-        icon: 'i-heroicons-home',
-        to: '/'
-        }, {
-        label: 'Repositories',
-        icon: 'i-heroicons-square-3-stack-3d',
-        to: '/repos'
-        }, {
+  label: 'Home',
+  icon: 'i-heroicons-home',
+  to: '/'
+}, {
+  label: 'Repositories',
+  icon: 'i-heroicons-square-3-stack-3d',
+  to: '/repos'
+}, {
   label: name,
   icon: 'i-heroicons-link'
 }]
 
 const noSecret = ref(false)
 const isOpen = ref(false)
+const modalDelete = ref(false)
 
 let modalValue = ""
 let modalName = ""
@@ -27,7 +28,7 @@ let modalLoading = false
 let repoPublicKey = ""
 let repoKeyId = ""
 
-const access_token_cookie = useCookie('access_token')
+const access_token_cookie = useCookie('access_token');
 const username_cookie = useCookie('username');
 
 const octokit = new Octokit({
@@ -94,15 +95,23 @@ async function convertUsingSodiumAndPush() {
   }
 }
 
-async function removeSecret(){
+async function removeSecret() {
   await octokit.request('DELETE /repos/{owner}/{repo}/actions/secrets/{secret_name}', {
-  owner: username_cookie.value,
-  repo: name,
-  secret_name: modalName,
-  headers: {
-    'X-GitHub-Api-Version': '2022-11-28'
-  }
-})
+    owner: username_cookie.value,
+    repo: name,
+    secret_name: modalName,
+    headers: {
+      'X-GitHub-Api-Version': '2022-11-28'
+    }
+  })
+  datas.value = datas.value.filter((data) => data.name !== modalName)
+  modalDelete.value = false
+  toast.add({ title: 'Success', description: 'Secret deleted', status: 'success' })
+}
+
+async function openDeleteModal(name: string) {
+  modalDelete.value = true;
+  modalName = name;
 }
 
 async function addSecret() {
@@ -117,17 +126,17 @@ async function addSecret() {
       await getPublicKey()
     }
     const encryptedValue = await convertUsingSodiumAndPush()
-      // ad supabase
-      datas.value.push({
-        name: modalName,
-      })
-    } catch (error) {
-      console.error('Error adding secret:', error)
-    }
-    toast.add({ title: 'Success', description: 'Secret added', status: 'success' })
-    modalLoading = false
-    isOpen.value = false
+    // ad supabase
+    datas.value.push({
+      name: modalName,
+    })
+  } catch (error) {
+    console.error('Error adding secret:', error)
   }
+  toast.add({ title: 'Success', description: 'Secret added', status: 'success' })
+  modalLoading = false
+  isOpen.value = false
+}
 
 onMounted(async () => {
   await getSecretsList();
@@ -136,7 +145,13 @@ onMounted(async () => {
 
 <template>
   <div class="text-center">
-    <UBreadcrumb :links="links" class="flex ml-6" />
+    <div class="px-4 flex flex-row justify-between items-center">
+      <UBreadcrumb :links="links" class="flex" />
+      <div class="flex">
+        <UButton class="mr-2" color="white" variant="solid">Button</UButton>
+        <UButton color="white" variant="solid">Button</UButton>
+      </div>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 lg:py-[60px] lg:px-[100px]">
       <div v-if="noSecret" class="border border-gray-300 bg-gray-100 p-4 rounded-md mb-4">
         This repo has no secrets
@@ -153,42 +168,80 @@ onMounted(async () => {
         </div>
       </template>
       <template v-else>
-        <div v-for="data in datas" :key="data.id" class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer mb-4">
+        <div v-for="data in datas" :key="data.id"
+          class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer mb-4">
           {{ data.name }}
           <div class="flex flex-row justify-center mt-2">
-            <UInput color="primary" variant="outline" placeholder="Search..." />
             <UButton icon="i-heroicons-eye-16-solid" size="sm" color="primary" square variant="solid" />
+            <UInput color="primary" variant="outline" placeholder="Search..." />
             <UButton icon="i-heroicons-check-16-solid" size="sm" color="primary" square variant="solid" />
+            <UButton icon="i-heroicons-trash-solid" size="sm" color="primary" square variant="solid"
+              @click="openDeleteModal(data.name)" />
           </div>
         </div>
       </template>
-    <div class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer mb-4 flex justify-center items-center">
-        <UButton class="flex" @click="isOpen=true" icon="i-heroicons-plus-16-solid" size="sm" color="primary" square variant="solid" />
-    </div>
+      <div
+        class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer mb-4 flex justify-center items-center">
+        <UButton class="flex" @click="isOpen = true" icon="i-heroicons-plus-16-solid" size="sm" color="primary" square
+          variant="solid" />
+      </div>
     </div>
   </div>
 
   <UModal v-model="isOpen">
     <div class="px-10 py-8">
-      <UInput class="my-2" color="primary" variant="outline" placeholder="Name" v-model="modalName"/>
-      <UInput class="my-2" type="password" color="primary" variant="outline" placeholder="Value" v-model="modalValue"/>
+      <UInput class="my-2" color="primary" variant="outline" placeholder="Name" v-model="modalName" />
+      <UInput class="my-2" type="password" color="primary" variant="outline" placeholder="Value" v-model="modalValue" />
       <div class="flex justify-end">
         <UButton @click="addSecret">
-    <template #leading>
-    <div v-if="!modalLoading" class="">Add</div>
-    <div v-else>
-      <div role="status">
-          <svg aria-hidden="true" class="w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-              <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-          </svg>
-          <span class="sr-only">Loading...</span>
+          <template #leading>
+            <div v-if="!modalLoading" class="">Oui</div>
+            <div v-else>
+              <div role="status">
+                <svg aria-hidden="true" class="w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                  viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                    fill="currentColor" />
+                  <path
+                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                    fill="currentFill" />
+                </svg>
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+          </template>
+        </UButton>
+        <UButton @click="isOpen = false" label="No" class="mx-2 px-4 py-2" />
       </div>
     </div>
-    </template>
-  </UButton>
+  </UModal>
+
+  <UModal v-model="modalDelete">
+    <div class="px-10 py-8">
+      Do you want to delete this secret?
+      <div class="flex justify-end">
+        <UButton @click="removeSecret" class="mx-2 px-4 py-2">
+          <template #leading>
+            <div v-if="!modalLoading" class="">Yes</div>
+            <div v-else>
+              <div role="status">
+                <svg aria-hidden="true" class="w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                  viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                    fill="currentColor" />
+                  <path
+                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                    fill="currentFill" />
+                </svg>
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+          </template>
+        </UButton>
+        <UButton @click="modalDelete = false" label="No" class="mx-2 px-4 py-2" />
       </div>
     </div>
   </UModal>
 </template>
-
