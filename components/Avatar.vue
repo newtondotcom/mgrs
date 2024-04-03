@@ -1,8 +1,12 @@
+<script setup lang="ts">
+const username_cookie = useCookie('username');
+</script>
+
 <template>
   <UPopover>
   <UButton color="gray">
     <template #leading>
-      <div class="pl-4">newtondotcom</div>
+      <div class="pl-4">{{username_cookie}}</div>
       <UAvatar
         chip-color="primary"
         chip-text=""
