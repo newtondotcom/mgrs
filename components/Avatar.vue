@@ -36,7 +36,7 @@ async function revokePermissions() {
       <UButton color="gray">
         <template #leading>
           <div class="pl-4">{{ username_cookie }}</div>
-          <UAvatar chip-color="primary" chip-text="" chip-position="top-right" size="sm" :src="avatar_url_cookie"
+          <UAvatar chip-color="green" chip-text="" chip-position="top-right" size="sm" :src="avatar_url_cookie"
             alt="Avatar" />
         </template>
       </UButton>
