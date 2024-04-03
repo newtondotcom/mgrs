@@ -148,8 +148,18 @@ onMounted(async () => {
     <div class="px-4 flex flex-row justify-between items-center">
       <UBreadcrumb :links="links" class="flex" />
       <div class="flex">
-        <UButton class="mr-2" color="white" variant="solid">Button</UButton>
-        <UButton color="white" variant="solid">Button</UButton>
+        <UButton class="mr-2" color="white" variant="solid">
+          <span class="text-gray-500">
+            <UIcon name="i-heroicons-arrow-down-tray-16-solid" />
+            .env
+          </span>
+        </UButton>
+        <UButton class="mr-2" color="white" variant="solid">
+          <span class="text-gray-500">
+            <UIcon name="i-heroicons-arrow-up-tray-16-solid" />
+            .env
+          </span>
+        </UButton>
       </div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 lg:py-[60px] lg:px-[100px]">
