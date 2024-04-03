@@ -52,7 +52,7 @@ async function getRepositoriesList() {
     length.value = datas.value.length
   } catch (error) {
     console.error('Error fetching repositories:', error)
-    toast.error('Error fetching repositories')
+    toast.add({ title: 'Fail', description: 'Failed to recover your repos', status: 'fail' })
   }
 }
 
