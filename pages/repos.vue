@@ -27,6 +27,7 @@ const datas = ref([]);
 const printedDatas = ref([]);
 const search = ref('')
 const length = ref(0)
+const loading = ref(true)
 
 watch([page], () => {
   printedDatas.value = datas.value.slice((page.value - 1) * pagecount.value, page.value * pagecount.value)
@@ -50,6 +51,7 @@ async function getRepositoriesList() {
     datas.value = response.data
     printedDatas.value = datas.value.slice(0, pagecount.value)
     length.value = datas.value.length
+    loading.value = false
   } catch (error) {
     console.error('Error fetching repositories:', error)
     toast.add({ title: 'Fail', description: 'Failed to recover your repos', status: 'fail' })
@@ -64,27 +66,27 @@ onMounted(async () => {
 <template>
   <div class="text-center">
     <UBreadcrumb :links="links" class="mb-6 ml-6" />
-      <div class="flex flex-row justify-center w-min-screen w-full">
+    <div class="flex flex-row justify-center w-min-screen w-full">
       <UInput class="align-end" color="gray" variant="outline" placeholder="Search..." v-model="search" />
-      </div>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:py-[60px] lg:px-[100px]">
-      <template v-if="datas.length === 0">
-        <div v-for="n in pagecount.value" :key="n" class="border border-gray-300 bg-gray-100 p-4 rounded-md">
+      <template v-if="loading">
+        <div v-for="n in pagecount" :key="n" class="border border-gray-300 bg-gray-100 p-4 rounded-md">
           <div class="flex items-center space-x-4">
-            <USkeleton class="h-12 w-12" :ui="{ rounded: 'rounded-full' }" />
-            <div class="space-y-2">
-              <USkeleton class="h-4 w-[250px]" />
-              <USkeleton class="h-4 w-[200px]" />
-            </div>
+            <USkeleton class="h-4 w-full" />
           </div>
         </div>
       </template>
       <template v-else>
-        <div v-for="data in printedDatas" 
-          :key="data.id" 
+        <div v-for="data in printedDatas"
+          :key="data.id"
           @click="navigateTo('/repo/' + data.name)"
           class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer">
-          {{ data.name }}
+          <div class="flex items-center space-x-4">
+            <div class="text-left">
+              <div class="font-medium text-gray-900">{{ data.name }}</div>
+            </div>
+          </div>
         </div>
       </template>
     </div>
@@ -93,3 +95,4 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+

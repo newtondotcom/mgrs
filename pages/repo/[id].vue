@@ -136,16 +136,27 @@ async function addSecret() {
     });
     // add secret to Supabase
     // ...
+    toast.add({ title: 'Success', description: 'Secret added'});
   } catch (error) {
     console.error('Error adding secret:', error);
   }
-  toast.add({ title: 'Success', description: 'Secret added', status: 'success' });
   isOpen.value = false;
+  modalName = "";
+  modalValue = "";
 }
 
 onMounted(async () => {
   await getSecretsList();
 })
+
+watch([datas], () => {
+  if (datas.value.length === 0) {
+    noSecret.value = true
+  } else {
+    noSecret.value = false
+  }
+})
+
 </script>
 
 <template>
@@ -175,10 +186,6 @@ onMounted(async () => {
         <div v-for="n in 6" :key="n" class="border border-gray-300 bg-gray-100 p-4 rounded-md mb-4">
           <div class="flex items-center space-x-4">
             <USkeleton class="h-12 w-12" :ui="{ rounded: 'rounded-full' }" />
-            <div class="space-y-2">
-              <USkeleton class="h-4 w-[250px]" />
-              <USkeleton class="h-4 w-[200px]" />
-            </div>
           </div>
         </div>
       </template>
