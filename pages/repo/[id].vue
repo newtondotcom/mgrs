@@ -194,10 +194,10 @@ watch([datas], () => {
           class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer mb-4">
           {{ data.name }}
           <div class="flex flex-row justify-center mt-2">
-            <UButton icon="i-heroicons-eye-16-solid" size="sm" color="primary" square variant="solid" />
+            <UButton class="mx-1" icon="i-heroicons-eye-16-solid" size="sm" color="primary" square variant="solid" />
             <UInput color="primary" variant="outline" placeholder="Search..." />
-            <UButton icon="i-heroicons-check-16-solid" size="sm" color="primary" square variant="solid" />
-            <UButton icon="i-heroicons-trash-solid" size="sm" color="primary" square variant="solid"
+            <UButton class="ml-1" icon="i-heroicons-check-16-solid" size="sm" color="primary" square variant="solid" />
+            <UButton class="ml-1" icon="i-heroicons-trash-solid" size="sm" color="primary" square variant="solid"
               @click="openDeleteModal(data.name)" />
           </div>
         </div>
