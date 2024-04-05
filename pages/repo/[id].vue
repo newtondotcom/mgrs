@@ -47,7 +47,13 @@ async function getSecretsList() {
         'Accept': 'application/vnd.github.v3+json'
       }
     })
-    datas.value = response.data.secrets
+    const tempSecrets = response.data.secrets
+    datas.value = tempSecrets.map((data) => {
+      return {
+        name: data.name,
+        visibility: "password"
+      }
+    })
     if (datas.value.length === 0) {
       noSecret.value = true
     }
