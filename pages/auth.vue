@@ -13,6 +13,8 @@ if (code) {
     params: { code: code },
     });
     access_token_cookie.value = data.value.access_token;
+    navigateTo('/repos');
+} else if (access_token_cookie.value) {
     navigateTo('/github');
 }
 
