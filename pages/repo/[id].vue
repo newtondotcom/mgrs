@@ -151,6 +151,13 @@ async function addSecret() {
   modalValue = "";
 }
 
+function changeVisibility(name: string) {
+  const secret = datas.value.find((data) => data.name === name);
+  if (secret) {
+    secret.visibility = secret.visibility === "password" ? "text" : "password";
+  }
+}
+
 onMounted(async () => {
   await getSecretsList();
 })
