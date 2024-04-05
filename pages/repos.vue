@@ -52,17 +52,15 @@ async function getRepositoriesList() {
     datas.value = tempRepos.map((data) => {
       return {
         name: data.name,
-        id : data.id,
-        visibility : "password"
+        id : data.id
       }
     })
-    console.log(datas.value)
     printedDatas.value = datas.value.slice(0, pagecount.value)
     length.value = datas.value.length
     loading.value = false
   } catch (error) {
     console.error('Error fetching repositories:', error)
-    toast.add({ title: 'Fail', description: 'Failed to recover your repos', status: 'fail' })
+    toast.add({ title: 'Fail', description: 'Failed to recover your repos'})
   }
 }
 
