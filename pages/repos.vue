@@ -48,7 +48,15 @@ async function getRepositoriesList() {
       },
       per_page: 1000,
     })
-    datas.value = response.data
+    const tempRepos = response.data
+    datas.value = tempRepos.map((data) => {
+      return {
+        name: data.name,
+        id : data.id,
+        visibility : "password"
+      }
+    })
+    console.log(datas.value)
     printedDatas.value = datas.value.slice(0, pagecount.value)
     length.value = datas.value.length
     loading.value = false
