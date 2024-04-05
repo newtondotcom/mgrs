@@ -51,7 +51,8 @@ async function getSecretsList() {
     datas.value = tempSecrets.map((data) => {
       return {
         name: data.name,
-        visibility: "password"
+        visibility: "password",
+        value: ""
       }
     })
     if (datas.value.length === 0) {
@@ -114,31 +115,32 @@ async function removeSecret() {
   toast.add({ title: 'Success', description: 'Secret deleted', status: 'success' })
 }
 
-async function openDeleteModal(name: string) {
+async function openDeleteModal(data) {
   modalDelete.value = true;
-  modalName = name;
+  modalName = data.name;
 }
 
 async function addSecret() {
   if (modalName === "" || modalValue === "") {
-    toast.add({ title: 'Error', description: 'Name and value are required', status: 'error' });
-    modalLoading = false;
+    toast.add({ title: 'Error', description: 'Name and value are required'});
     return;
   }
   try {
     if (repoPublicKey === "") {
       await getPublicKey();
     }
-    const encryptedValue = await convertUsingSodiumAndPush();
+    await convertUsingSodiumAndPush();
     // check if secret already exists
     const existingSecret = datas.value.find((data) => data.name === modalName.toUpperCase());
     if (existingSecret) {
-      toast.add({ title: 'Error', description: 'Secret already exists', status: 'error' });
+      toast.add({ title: 'Error', description: 'Secret already exists'});
       return;
     }
     // add secret to datas array
     datas.value.push({
-      name: modalName
+      name: modalName,
+      visibility: "password",
+      value: ""
     });
     // add secret to Supabase
     // ...
@@ -151,11 +153,22 @@ async function addSecret() {
   modalValue = "";
 }
 
-function changeVisibility(name: string) {
-  const secret = datas.value.find((data) => data.name === name);
+function changeVisibility(dataf) {
+  const secret = datas.value.find((data) => data.name === dataf.name);
   if (secret) {
     secret.visibility = secret.visibility === "password" ? "text" : "password";
   }
+}
+
+async function updateValueToGithub(data) {
+    modalValue = data.value;
+    modalName = data.name;
+    try {
+    await convertUsingSodiumAndPush();
+    toast.add({ title: 'Success', description: 'Secret updated'});
+    } catch (error) {
+    console.error('Error updating secret:', error);
+    }
 }
 
 onMounted(async () => {
@@ -203,15 +216,14 @@ watch([datas], () => {
         </div>
       </template>
       <template v-else>
-        <div v-for="data in datas" :key="data.id"
+        <div v-for="data in datas" :key="data.name"
           class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer mb-4">
           {{ data.name }}
           <div class="flex flex-row justify-center mt-2">
-            <UButton class="mx-1" icon="i-heroicons-eye-16-solid" size="sm" color="primary" square variant="solid" />
-            <UInput color="primary" variant="outline" placeholder="Search..." />
-            <UButton class="ml-1" icon="i-heroicons-check-16-solid" size="sm" color="primary" square variant="solid" />
-            <UButton class="ml-1" icon="i-heroicons-trash-solid" size="sm" color="primary" square variant="solid"
-              @click="openDeleteModal(data.name)" />
+            <UButton @click="changeVisibility(data)" class="mx-1" icon="i-heroicons-eye-16-solid" size="sm" color="primary" square variant="solid" />
+            <UInput :key="data.name" v-model="data.value" :type="data.visibility" color="primary" variant="outline" placeholder="Search..." />
+            <UButton @click="updateValueToGithub(data)" class="ml-1" icon="i-heroicons-check-16-solid" size="sm" color="primary" square variant="solid" />
+            <UButton @click="openDeleteModal(data)" class="ml-1" icon="i-heroicons-trash-solid" size="sm" color="primary" square variant="solid"/>
           </div>
         </div>
       </template>
