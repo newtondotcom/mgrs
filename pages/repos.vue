@@ -61,6 +61,7 @@ async function getRepositoriesList() {
   } catch (error) {
     console.error('Error fetching repositories:', error)
     toast.add({ title: 'Fail', description: 'Failed to recover your repos'})
+    navigateTo('/github')
   }
 }
 
@@ -71,7 +72,7 @@ onMounted(async () => {
 
 <template>
   <div class="text-center">
-    <UBreadcrumb :links="links" class="mb-6 ml-6" />
+    <UBreadcrumb :links="links" class="mb-6 ml-6 lg:px-[100px]" />
     <div class="flex flex-row justify-center w-min-screen w-full">
       <UInput class="align-end" color="gray" variant="outline" placeholder="Search..." v-model="search" />
     </div>
