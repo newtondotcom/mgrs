@@ -15,8 +15,6 @@ watch(user, () => {
   }
 }, { immediate: true });
 
-console.log(avatar_url_cookie.value)
-
 async function logout() {
   await supabase.auth.signOut()
   username_cookie.value = '';
