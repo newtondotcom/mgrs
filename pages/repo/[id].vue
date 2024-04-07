@@ -164,6 +164,9 @@ async function updateValueToGithub(data) {
     modalValue = data.value;
     modalName = data.name;
     try {
+    if (repoPublicKey === "") {
+      await getPublicKey();
+    }
     await convertUsingSodiumAndPush();
     toast.add({ title: 'Success', description: 'Secret updated'});
     } catch (error) {
@@ -187,7 +190,7 @@ watch([datas], () => {
 
 <template>
   <div class="text-center">
-    <div class="px-4 flex flex-row justify-between items-center">
+    <div class="px-4 flex flex-row justify-between items-center lg:px-[100px]">
       <UBreadcrumb :links="links" class="flex" />
       <div class="flex">
         <UButton class="mr-2" color="white" variant="solid">
