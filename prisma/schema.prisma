@@ -12,7 +12,9 @@ generator client {
 model User {
   user_id      String      @id
   access_token String?
+  username String?
   repositories Repository[]
+  avatar_url String?
 }
 
 // Define the Repository model
