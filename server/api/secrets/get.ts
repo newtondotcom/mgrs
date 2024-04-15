@@ -1,17 +1,22 @@
 import { serverSupabaseUser } from '#supabase/server'
 import { Octokit } from '@octokit/core'
 import { getToken } from '~/server/data/user'
-import { getSavedSecrets, rmSavedSecretsRmFromGh, upsertPublicKey } from '~/server/data/secrets'
+import { getPublicKeySaved, getSavedSecrets, rmSavedSecretsRmFromGh, upsertPublicKey } from '~/server/data/secrets'
+
+let token = "";
+let user_id = "";
+let octokit : Octokit;
 
 export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event)
-    const token = await getToken(user.id)
+    token = await getToken(user.id) || "";
+    user_id = user.id 
     const username = user.user_metadata.user_name
-    const repoName = "";
-    const octokit = new Octokit({
+    const repoName = getQuery(event).name
+    octokit = new Octokit({
         auth: token
     });
-    const tempSecrets = await getSecrets(user?.id, repoName, octokit)
+    const tempSecrets = await getSecrets(username, repoName)
     const savedSecrets = await getSavedSecrets(user?.id, repoName)
     const mergedSecrets = tempSecrets.map(secret => {
         return {
@@ -21,12 +26,12 @@ export default defineEventHandler(async (event) => {
         }
     })
     rmSavedSecretsRmFromGh(tempSecrets, savedSecrets, repoName, user?.id)
-    getPublicKey(user?.id, repoName, octokit)
+    getPublicKey(username, repoName)
     return mergedSecrets
 })
 
 
-async function getSecrets(owner: string, repo: string, octokit: Octokit) {
+async function getSecrets(owner: string, repo: string) {
     const response = await octokit.request('GET /repos/{owner}/{repo}/actions/secrets', {
         owner: owner,
         repo: repo,
@@ -39,7 +44,11 @@ async function getSecrets(owner: string, repo: string, octokit: Octokit) {
     return tempSecrets
 }
 
-async function getPublicKey(owner: string, repo: string, octokit: Octokit) {
+async function getPublicKey(owner: string, repo: string) {
+    const keySaved = await getPublicKeySaved(user_id, repo)
+    if (keySaved?.public_key && keySaved?.key_id) {
+        return keySaved
+    }
     const response = await octokit.request('GET /repos/{owner}/{repo}/actions/secrets/public-key', {
         owner: owner,
         repo: repo,
@@ -48,5 +57,5 @@ async function getPublicKey(owner: string, repo: string, octokit: Octokit) {
         }
     })
     const key = response.data
-    return await upsertPublicKey(owner, repo, key.key, key.key_id)
+    return await upsertPublicKey(user_id, repo, key.key, key.key_id)
 }
