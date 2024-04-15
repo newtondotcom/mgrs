@@ -1,4 +1,5 @@
-import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
+import { serverSupabaseUser } from '#supabase/server'
+import registerUser from '../data/user';
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event)
@@ -29,17 +30,7 @@ export default defineEventHandler(async (event) => {
 
     access_token = data.access_token;
 
-    const client = await serverSupabaseClient(event)
     const user = await serverSupabaseUser(event)
-    /*
-    const data = await client.from('tokens').insert(
-      {
-      access_token: access_token,
-      refresh_token: refresh_token,
-      access_expiry: access_expiry,
-      refresh_expiry: refresh_expiry,
-    })
-    */
 
     const response = await $fetch("https://api.github.com/user", {
       headers: {
@@ -48,6 +39,8 @@ export default defineEventHandler(async (event) => {
         "Accept-Encoding": "application/json",
       },
     })
+
+    registerUser(user.value.id, access_token)
 
     return {
       access_token: data.access_token,
