@@ -12,6 +12,7 @@ export async function getRepoIdfromRepoName(user_id: string, repository_name: st
 }
 
 export async function getSavedSecrets(user_id: string, repository_name: string) {
+    console.log(user_id, repository_name)
     const repository_id = await getRepoIdfromRepoName(user_id, repository_name)
     return await prisma.secret.findMany({
         where: {
@@ -51,7 +52,7 @@ export async function upsertSecret(user_id: string, repository_name: string, sec
     })
 }
 
-export async function rmSavedSecretsRmFromGh(tempSecrets: any[], savedSecrets: any[], repository_name: string, user_id: string) {
+export async function mergeSecretsGhPrisma(tempSecrets: any[], savedSecrets: any[], repository_name: string, user_id: string) {
     const repository_id = await getRepoIdfromRepoName(user_id,repository_name)
     // remove deleted secrets from github
     for (const tempSecret of savedSecrets) {
@@ -60,6 +61,18 @@ export async function rmSavedSecretsRmFromGh(tempSecrets: any[], savedSecrets: a
                 where: {
                     repository_id,
                     name: tempSecret.name
+                }
+            })
+        }
+    }
+    // add new secrets from github
+    for (const savedSecret of tempSecrets) {
+        if (!savedSecrets.find(tempSecret => tempSecret.name === savedSecret.name)) {
+            await prisma.secret.create({
+                data: {
+                    repository_id,
+                    name: savedSecret.name,
+                    value: ""
                 }
             })
         }
