@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Octokit } from "@octokit/core";
 const toast = useToast()
 const route = useRoute()
 import sodium from "libsodium-wrappers";
@@ -27,29 +26,12 @@ let modalName = ""
 let repoPublicKey = ""
 let repoKeyId = ""
 
-
-const username_cookie = useCookie('username');
-
-const {data} = await useFetch("/api/token");
-const access_token = data.value.access_token;
-const octokit = new Octokit({
-    auth: access_token
-});
-
 const datas = ref([]);
 const secrets = ref([]);
 
 async function getSecretsList() {
   try {
-    const response = await octokit.request('GET /repos/{owner}/{repo}/actions/secrets', {
-      owner: username_cookie.value,
-      repo: name,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28',
-        'Accept': 'application/vnd.github.v3+json'
-      }
-    })
-    const tempSecrets = response.data.secrets
+    const tempSecrets = await useFetch(`/api/repo/${name}`).data
     datas.value = tempSecrets.map((data) => {
       return {
         name: data.name,
