@@ -1,10 +1,9 @@
 import { serverSupabaseUser } from '#supabase/server'
-import { getRepos,mergeRepos } from '../data/repos';
+import { mergeRepos } from '../data/repos';
 import { getToken } from '../data/user';
 import { Octokit } from "@octokit/core";
 
 export default defineEventHandler(async (event) => {
-
 const user = await serverSupabaseUser(event)
 const token = await getToken(user.id)
 const octokit = new Octokit({
@@ -19,8 +18,7 @@ const response = await octokit.request('GET /user/repos', {
     per_page: 1000
 });
 const ghRepos = response.data;
-const savedRepos = await getRepos(user.id);
-mergeRepos(ghRepos, savedRepos,user.id);
+mergeRepos(ghRepos, user.id);
 return ghRepos;
 });
 
