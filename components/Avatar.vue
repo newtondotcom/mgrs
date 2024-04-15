@@ -4,7 +4,7 @@ const supabase = useSupabaseClient()
 let avatar_url = ref('');
 let username = ref('');
 
-async function refresInfos(){
+async function refreshInfos(){
   const {data} = await useFetch("/api/infos");
   avatar_url.value = data.value?.avatar_url;
   username.value = data.value?.username;
@@ -12,15 +12,13 @@ async function refresInfos(){
 
 const userConnected = ref(false);
 
-await refresInfos();
-
 watch(user, async () => {
   if (user.value) {
     userConnected.value = true;
+  await refreshInfos();
   } else {
     userConnected.value = false;
   }
-  await refresInfos();
 }, { immediate: true });
 
 async function logout() {
