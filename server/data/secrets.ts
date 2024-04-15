@@ -50,3 +50,18 @@ export async function upsertSecret(user_id: string, repository_name: string, sec
         }
     })
 }
+
+export async function rmSavedSecretsRmFromGh(tempSecrets: any[], savedSecrets: any[], repository_name: string, user_id: string) {
+    const repository_id = await getRepoIdfromRepoName(user_id,repository_name)
+    // remove deleted secrets from github
+    for (const tempSecret of savedSecrets) {
+        if (!tempSecrets.find(savedSecret => savedSecret.name === tempSecret.name)) {
+            await prisma.secret.delete({
+                where: {
+                    repository_id,
+                    name: tempSecret.name
+                }
+            })
+        }
+    }
+}
