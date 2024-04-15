@@ -65,3 +65,16 @@ export async function rmSavedSecretsRmFromGh(tempSecrets: any[], savedSecrets: a
         }
     }
 }
+
+export async function getPublicKeySaved(user_id: string, repository_name: string) {
+    const repository_id = await getRepoIdfromRepoName(user_id, repository_name)
+    return await prisma.repository.findUnique({
+        where: {
+            repository_id
+        },
+        select: {
+            public_key: true,
+            key_id: true
+        }
+    })
+}
