@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     public : {
       GH_CLIENT_ID : process.env.GH_CLIENT_ID,
       GH_CLIENT_SECRET : process.env.GH_CLIENT_SECRET,
+      SECRETS_ENCRYPTION_KEY : process.env.SECRET_ENCRYPTION_KEY,
     },
   },
   security: {
@@ -35,6 +36,9 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       ],
     },
+  },
+  tailwindcss: {
+    viewer : false,
   },
 })
   
