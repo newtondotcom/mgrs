@@ -30,10 +30,10 @@ model Repository {
 
 // Define the Secret model
 model Secret {
-  secret_id     Int       @id @default(autoincrement())
   name         String
   value         String
   repository_id Int
   repository    Repository @relation(fields: [repository_id], references: [repository_id])
+  @@id([name, repository_id])
 }
 
