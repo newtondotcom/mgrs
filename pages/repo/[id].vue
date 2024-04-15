@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const toast = useToast()
 const route = useRoute()
-import sodium from "libsodium-wrappers";
 const name = route.params.id
 const links = [{
   label: 'Home',
@@ -31,7 +30,7 @@ const secrets = ref([]);
 
 async function getSecretsList() {
   try {
-    const tempSecrets = await useFetch(`/api/repo/${name}`).data
+    const tempSecrets = await $fetch(`/api/secrets/get?name=${name}`)
     datas.value = tempSecrets.map((data) => {
       return {
         name: data.name,
@@ -47,38 +46,15 @@ async function getSecretsList() {
   }
 }
 
-async function getPublicKey() {
-  try {
-    const response = await octokit.request('GET /repos/{owner}/{repo}/actions/secrets/public-key', {
-      owner: username_cookie.value,
-      repo: name,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
+async function upsertSecret() {
+  const response = await $fetch('/api/secrets/post', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      name: modalName,
+      value: modalValue,
+      repo: name
     })
-    const key = response.data
-    repoPublicKey = key.key
-    repoKeyId = key.key_id
-  } catch (error) {
-    console.error('Error fetching public key:', error)
-  }
-}
-
-async function convertUsingSodiumAndPush() {
-  await sodium.ready;
-  let binkey = sodium.from_base64(repoPublicKey, sodium.base64_variants.ORIGINAL)
-  let binsec = sodium.from_string(modalValue)
-  let encBytes = sodium.crypto_box_seal(binsec, binkey)
-  let encryptedValue = sodium.to_base64(encBytes, sodium.base64_variants.ORIGINAL)
-  const response = await octokit.request('PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}', {
-    owner: "newtondotcom",
-    repo: name,
-    secret_name: modalName,
-    encrypted_value: encryptedValue,
-    key_id: repoKeyId,
-    headers: {
-      'X-GitHub-Api-Version': '2022-11-28'
-    }
   })
   if (response.status === 201) {
     console.log('Secret added')
@@ -86,14 +62,7 @@ async function convertUsingSodiumAndPush() {
 }
 
 async function removeSecret() {
-  await octokit.request('DELETE /repos/{owner}/{repo}/actions/secrets/{secret_name}', {
-    owner: username_cookie.value,
-    repo: name,
-    secret_name: modalName,
-    headers: {
-      'X-GitHub-Api-Version': '2022-11-28'
-    }
-  })
+  await $fetch(`/api/secrets/delete?name=${name}&secret=${modalName}`)
   datas.value = datas.value.filter((data) => data.name !== modalName)
   modalDelete.value = false
   toast.add({ title: 'Success', description: 'Secret deleted', status: 'success' })
@@ -110,10 +79,7 @@ async function addSecret() {
     return;
   }
   try {
-    if (repoPublicKey === "") {
-      await getPublicKey();
-    }
-    await convertUsingSodiumAndPush();
+    await upsertSecret();
     // check if secret already exists
     const existingSecret = datas.value.find((data) => data.name === modalName.toUpperCase());
     if (existingSecret) {
@@ -126,8 +92,6 @@ async function addSecret() {
       visibility: "password",
       value: ""
     });
-    // add secret to Supabase
-    // ...
     toast.add({ title: 'Success', description: 'Secret added'});
   } catch (error) {
     console.error('Error adding secret:', error);
@@ -148,10 +112,7 @@ async function updateValueToGithub(data) {
     modalValue = data.value;
     modalName = data.name;
     try {
-    if (repoPublicKey === "") {
-      await getPublicKey();
-    }
-    await convertUsingSodiumAndPush();
+    await upsertSecret();
     toast.add({ title: 'Success', description: 'Secret updated'});
     } catch (error) {
     console.error('Error updating secret:', error);
