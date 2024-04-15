@@ -24,11 +24,14 @@ model Repository {
   repository_name String
   user            User      @relation(fields: [user_id], references: [user_id])
   secrets         Secret[]
+  public_key      String?
+  key_id          String?
 }
 
 // Define the Secret model
 model Secret {
   secret_id     Int       @id @default(autoincrement())
+  name         String
   value         String
   repository_id Int
   repository    Repository @relation(fields: [repository_id], references: [repository_id])
