@@ -51,9 +51,9 @@ async function upsertSecret() {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
-      name: modalName,
+      name: name,
       value: modalValue,
-      repo: name
+      secret : modalName
     })
   })
   if (response.status === 201) {
