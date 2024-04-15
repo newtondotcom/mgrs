@@ -18,7 +18,6 @@ export default defineEventHandler(async (event) => {
     const octokit = new Octokit({
         auth: token
     });
-    console.log(username, repoName, secretName, value, publicKey, encryptedValue)
     const response = await octokit.request('PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}', {
       owner: username,
       repo: repoName,
@@ -31,7 +30,5 @@ export default defineEventHandler(async (event) => {
     })
     const encryptedValueDb = await encrypt(value, config.public.ENCRYPTION_KEY);
     await upsertSecret(user.id, repoName, secretName, encryptedValueDb)
-    if (response.status === 201) {
-      return response.data
-    }
+    return response
 }) 
