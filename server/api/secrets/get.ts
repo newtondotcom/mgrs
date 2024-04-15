@@ -18,7 +18,6 @@ export default defineEventHandler(async (event) => {
     octokit = new Octokit({
         auth: token
     });
-    console.log(token, user_id, username, repoName)
     const tempSecrets = await getSecrets(username, repoName)
     const savedSecrets = await getSavedSecrets(user?.id, repoName)
     const mergedSecrets = tempSecrets.map(secret => {
