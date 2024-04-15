@@ -31,13 +31,7 @@ const secrets = ref([]);
 async function getSecretsList() {
   try {
     const tempSecrets = await $fetch(`/api/secrets/get?name=${name}`)
-    datas.value = tempSecrets.map((data) => {
-      return {
-        name: data.name,
-        visibility: "password",
-        value: ""
-      }
-    })
+    datas.value = tempSecrets;
     if (datas.value.length === 0) {
       noSecret.value = true
     }
@@ -65,6 +59,9 @@ async function removeSecret() {
   await $fetch(`/api/secrets/delete?name=${name}&secret=${modalName}`)
   datas.value = datas.value.filter((data) => data.name !== modalName)
   modalDelete.value = false
+  if (datas.value.length === 0) {
+    noSecret.value = true
+  }
   toast.add({ title: 'Success', description: 'Secret deleted', status: 'success' })
 }
 
@@ -90,8 +87,10 @@ async function addSecret() {
     datas.value.push({
       name: modalName,
       visibility: "password",
-      value: ""
+      value: modalValue
     });
+    noSecret.value = false;
+    // toast success
     toast.add({ title: 'Success', description: 'Secret added'});
   } catch (error) {
     console.error('Error adding secret:', error);
