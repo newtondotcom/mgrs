@@ -1,32 +1,39 @@
 <script setup lang="ts">
 const user = useSupabaseUser();
 const supabase = useSupabaseClient()
-const username_cookie = useCookie('username');
-const avatar_url_cookie = useCookie('avatar_url');
+let avatar_url = ref('');
+let username = ref('');
 
-const {data} = await useFetch("/api/token");
-const access_token = data.value.access_token;
+async function refresInfos(){
+  const {data} = await useFetch("/api/infos");
+  avatar_url.value = data.value?.avatar_url;
+  username.value = data.value?.username;
+}
 
 const userConnected = ref(false);
 
-watch(user, () => {
+await refresInfos();
+
+watch(user, async () => {
   if (user.value) {
     userConnected.value = true;
   } else {
     userConnected.value = false;
   }
+  await refresInfos();
 }, { immediate: true });
 
 async function logout() {
   await supabase.auth.signOut()
-  username_cookie.value = '';
-  avatar_url_cookie.value = '';
   navigateTo('/');
 }
 
 async function revokePermissions() {
-  access_token.value = '';
   navigateTo('/');
+}
+
+async function goSignIn() {
+  navigateTo('/login');
 }
 </script>
 
@@ -35,8 +42,8 @@ async function revokePermissions() {
     <UPopover>
       <UButton color="gray">
         <template #leading>
-          <div class="pl-4">{{ username_cookie }}</div>
-          <UAvatar chip-color="green" chip-text="" chip-position="top-right" size="sm" :src="avatar_url_cookie"
+          <div class="pl-4">{{ username }}</div>
+          <UAvatar chip-color="green" chip-text="" chip-position="top-right" size="sm" :src="avatar_url"
             alt="Avatar" />
         </template>
       </UButton>
@@ -47,4 +54,5 @@ async function revokePermissions() {
       </template>
     </UPopover>
   </div>
+  <UButton v-else @click="goSignIn">Sign in</UButton>
 </template>
