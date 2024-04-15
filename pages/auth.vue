@@ -14,7 +14,7 @@ if (code) {
     params: { code: code },
     });
     navigateTo('/repos');
-} else if (access_token.value) {
+} else {
     navigateTo('/github');
 }
 
