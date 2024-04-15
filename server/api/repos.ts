@@ -4,8 +4,8 @@ import { getToken } from '../data/user';
 import { Octokit } from "@octokit/core";
 
 export default defineEventHandler(async (event) => {
-    const user = await serverSupabaseUser(event)
-    const token = await getToken(user.id)
+    const user = await serverSupabaseUser(event);
+    const token = await getToken(user.id);
     const octokit = new Octokit({
         auth: token
     });
