@@ -13,6 +13,7 @@
   "dependencies": {
     "@nuxt/ui": "^2.14.2",
     "@octokit/core": "^6.0.1",
+    "@prisma/client": "5.12.1",
     "@types/libsodium-wrappers": "^0.7.13",
     "autoprefixer": "^10.4.19",
     "libsodium-wrappers": "^0.7.13",
@@ -23,6 +24,7 @@
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
-    "@nuxtjs/supabase": "^1.1.7"
+    "@nuxtjs/supabase": "^1.1.7",
+    "prisma": "5.12.1"
   }
 }
