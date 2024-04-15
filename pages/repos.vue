@@ -72,10 +72,10 @@ onMounted(async () => {
         <div v-for="data in printedDatas"
           :key="data.id"
           @click="navigateTo('/repo/' + data.name)"
-          class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer">
+          class="border border-gray-300 text-gray-900 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer dark:text-white dark:bg-gray-600 dark:border-gray-800">
           <div class="flex items-center space-x-4">
             <div class="text-left">
-              <div class="font-medium text-gray-900">{{ data.name }}</div>
+              <div class="font-medium">{{ data.name }}</div>
             </div>
           </div>
         </div>

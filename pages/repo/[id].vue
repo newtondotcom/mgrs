@@ -152,7 +152,7 @@ watch([datas], () => {
       </div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 lg:py-[60px] lg:px-[100px]">
-      <div v-if="noSecret" class="border border-gray-300 bg-gray-100 p-4 rounded-md mb-4">
+      <div v-if="noSecret" class="border text-gray-900 border-gray-300 bg-gray-100 p-4 rounded-md mb-4 dark:text-white dark:bg-gray-600 dark:border-gray-800">
         This repo has no secrets
       </div>
       <template v-if="datas.length === 0 && !noSecret">
@@ -175,7 +175,7 @@ watch([datas], () => {
         </div>
       </template>
       <div
-        class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer mb-4 flex justify-center items-center">
+        class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer mb-4 flex justify-center items-center dark:text-white dark:bg-gray-600 dark:border-gray-800">
         <UButton class="flex" @click="isOpen = true" icon="i-heroicons-plus-16-solid" size="sm" color="primary" square
           variant="solid" />
       </div>
