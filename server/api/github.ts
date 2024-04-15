@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     })
 
   if (data.access_token) {
-    let access_token = "";
+    let access_token :string ;
 
     access_token = data.access_token;
 
@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
       },
     })
 
-    registerUser(user.id, access_token)
+    registerUser(user.id, access_token, user.user_metadata.user_name,user.user_metadata.avatar_url)
 
     return {
       access_token: data.access_token,
