@@ -16,7 +16,7 @@ export default defineNuxtConfig({
     public : {
       GH_CLIENT_ID : process.env.GH_CLIENT_ID,
       GH_CLIENT_SECRET : process.env.GH_CLIENT_SECRET,
-      SECRETS_ENCRYPTION_KEY : process.env.SECRET_ENCRYPTION_KEY,
+      ENCRYPTION_KEY : process.env.ENCRYPTION_KEY,
     },
   },
   security: {
