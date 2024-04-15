@@ -32,7 +32,7 @@ watch([search], () => {
 
 async function getRepositoriesList() {
   try {
-    const tempRepos =  await useFetch('/api/repos').data
+    const tempRepos =  await $fetch('/api/repos')
     datas.value = tempRepos.map((data) => {
       return {
         name: data.name,
