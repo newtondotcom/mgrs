@@ -8,6 +8,7 @@ export async function getRepos(user_id : string) {
 }
 
 export async function mergeRepos(ghRepos, savedRepos, user_id : string){
+    const savedRepos = await getRepos(user_id);
     for (let i = 0; i < ghRepos.length; i++) {
         const ghRepo = ghRepos[i];
         const savedRepo = savedRepos.find((repo) => repo.repository_id === ghRepo.id);
