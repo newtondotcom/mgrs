@@ -2,7 +2,8 @@
 const route = useRoute().query;
 const code = route.code;
 
-const access_token_cookie = useCookie('access_token');
+const {data} = await useFetch("/api/token");
+const access_token = data.value.access_token;
 const avatar_url_cookie = useCookie('avatar_url');
 const username_cookie = useCookie('username');
 
@@ -12,9 +13,8 @@ if (code) {
     const { data } = await useFetch('/api/github', {
     params: { code: code },
     });
-    access_token_cookie.value = data.value.access_token;
     navigateTo('/repos');
-} else if (access_token_cookie.value) {
+} else if (access_token.value) {
     navigateTo('/github');
 }
 

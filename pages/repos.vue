@@ -17,10 +17,10 @@ const links = [{
   to: '/repos'
 }]
 
-const access_token_cookie = useCookie('access_token')
-
+const {data} = await useFetch("/api/token");
+const access_token = data.value.access_token;
 const octokit = new Octokit({
-  auth: access_token_cookie.value
+  auth: access_token
 })
 
 const datas = ref([]);

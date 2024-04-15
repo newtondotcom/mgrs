@@ -3,7 +3,9 @@ const user = useSupabaseUser();
 const supabase = useSupabaseClient()
 const username_cookie = useCookie('username');
 const avatar_url_cookie = useCookie('avatar_url');
-const access_token_cookie = useCookie('access_token');
+
+const {data} = await useFetch("/api/token");
+const access_token = data.value.access_token;
 
 const userConnected = ref(false);
 
@@ -23,7 +25,7 @@ async function logout() {
 }
 
 async function revokePermissions() {
-  access_token_cookie.value = '';
+  access_token.value = '';
   navigateTo('/');
 }
 </script>

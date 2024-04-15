@@ -30,9 +30,10 @@ let repoKeyId = ""
 
 const username_cookie = useCookie('username');
 
-const access_token_cookie = await getToken();
+const {data} = await useFetch("/api/token");
+const access_token = data.value.access_token;
 const octokit = new Octokit({
-    auth: access_token_cookie
+    auth: access_token
 });
 
 const datas = ref([]);
