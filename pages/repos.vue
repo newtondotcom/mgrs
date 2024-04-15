@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { Octokit } from "@octokit/core";
-import { ref } from 'vue'
-
 const toast = useToast()
 
 const page = ref(1)
@@ -16,12 +13,6 @@ const links = [{
   icon: 'i-heroicons-square-3-stack-3d',
   to: '/repos'
 }]
-
-const {data} = await useFetch("/api/token");
-const access_token = data.value.access_token;
-const octokit = new Octokit({
-  auth: access_token
-})
 
 const datas = ref([]);
 const printedDatas = ref([]);
@@ -41,14 +32,7 @@ watch([search], () => {
 
 async function getRepositoriesList() {
   try {
-    const response = await octokit.request('GET /user/repos', {
-      type : "owner",
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      },
-      per_page: 1000,
-    })
-    const tempRepos = response.data
+    const tempRepos =  await useFetch('/api/repos').data
     datas.value = tempRepos.map((data) => {
       return {
         name: data.name,
