@@ -33,11 +33,46 @@ async function revokePermissions() {
 async function goSignIn() {
   navigateTo('/login');
 }
+
+const items = [
+  [{
+    label: 'Dashboard',
+    icon: 'i-heroicons-home',
+    to: '/repos'
+  }], [{
+    label: 'Revoke Permissions',
+    icon: 'i-heroicons-pencil-square-20-solid',
+    shortcuts: ['E'],
+    click: revokePermissions
+  }, {
+    label: 'Log out',
+    icon: 'i-heroicons-pencil-square-20-solid',
+    shortcuts: ['E'],
+    click: logout
+  }]
+  /*
+  {
+    label: 'Duplicate',
+    icon: 'i-heroicons-document-duplicate-20-solid',
+    shortcuts: ['D'],
+    disabled: true
+  }], [{
+    label: 'Archive',
+    icon: 'i-heroicons-archive-box-20-solid'
+  }, {
+    label: 'Move',
+    icon: 'i-heroicons-arrow-right-circle-20-solid'
+  }], [{
+    label: 'Delete',
+    icon: 'i-heroicons-trash-20-solid',
+    shortcuts: ['⌘', 'D']
+  }]
+  */
+]
 </script>
 
 <template>
-  <div v-if="userConnected">
-    <UPopover>
+  <UDropdown v-if="userConnected" :items="items" :popper="{ placement: 'bottom-start' }">
       <UButton color="gray">
         <template #leading>
           <div class="pl-4">{{ username }}</div>
@@ -45,12 +80,7 @@ async function goSignIn() {
             alt="Avatar" />
         </template>
       </UButton>
-      <template #panel>
-        <button @click="revokePermissions" class="px-3 py-2 block text-gray-500 transition hover:text-gray-500/75"> Revoke Permissions</button>
-        <button @click="logout" class="px-3 py-2 block text-gray-500 transition hover:text-gray-500/75"> Log out
-        </button>
-      </template>
-    </UPopover>
-  </div>
+  </UDropdown>
   <UButton v-else @click="goSignIn">Sign in</UButton>
 </template>
+
