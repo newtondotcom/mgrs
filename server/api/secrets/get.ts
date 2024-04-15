@@ -1,7 +1,8 @@
 import { serverSupabaseUser } from '#supabase/server'
 import { Octokit } from '@octokit/core'
 import { getToken } from '~/server/data/user'
-import { getPublicKeySaved, getSavedSecrets, rmSavedSecretsRmFromGh, upsertPublicKey } from '~/server/data/secrets'
+import { getPublicKeySaved, getSavedSecrets, mergeSecretsGhPrisma, upsertPublicKey } from '~/server/data/secrets'
+import { decrypt } from '~/server/data/crypto';
 
 let token = "";
 let user_id = "";
@@ -9,6 +10,7 @@ let octokit : Octokit;
 
 export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event)
+    const config = useRuntimeConfig(event)
     token = await getToken(user.id) || "";
     user_id = user.id 
     const username = user.user_metadata.user_name
@@ -16,16 +18,19 @@ export default defineEventHandler(async (event) => {
     octokit = new Octokit({
         auth: token
     });
+    console.log(token, user_id, username, repoName)
     const tempSecrets = await getSecrets(username, repoName)
     const savedSecrets = await getSavedSecrets(user?.id, repoName)
     const mergedSecrets = tempSecrets.map(secret => {
+        let value = savedSecrets.find(savedSecret => savedSecret.name === secret.name)?.value;
+        let decryptedValue = value ? decrypt(value, config.public.ENCRYPTION_KEY) : "";
         return {
             name: secret.name,
             visibility: "password",
-            value: savedSecrets.find(savedSecret => savedSecret.name === secret.name)?.value
+            value: decryptedValue
         }
     })
-    rmSavedSecretsRmFromGh(tempSecrets, savedSecrets, repoName, user?.id)
+    mergeSecretsGhPrisma(tempSecrets, savedSecrets, repoName, user?.id)
     getPublicKey(username, repoName)
     return mergedSecrets
 })
