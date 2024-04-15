@@ -1,7 +1,7 @@
 import { serverSupabaseUser } from '#supabase/server'
 import { Octokit } from '@octokit/core'
 import { getToken } from '~/server/data/user'
-import { getSavedSecrets, mergeSecrets, upsertPublicKey } from '~/server/data/secrets'
+import { getSavedSecrets, rmSavedSecretsRmFromGh, upsertPublicKey } from '~/server/data/secrets'
 
 export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event)
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
             value: savedSecrets.find(savedSecret => savedSecret.name === secret.name)?.value
         }
     })
-    mergeSecrets(tempSecrets, savedSecrets, repoName, user?.id)
+    rmSavedSecretsRmFromGh(tempSecrets, savedSecrets, repoName, user?.id)
     getPublicKey(user?.id, repoName, octokit)
     return mergedSecrets
 })
