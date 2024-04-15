@@ -27,12 +27,13 @@ let modalName = ""
 let repoPublicKey = ""
 let repoKeyId = ""
 
-const access_token_cookie = useCookie('access_token');
+
 const username_cookie = useCookie('username');
 
+const access_token_cookie = await getToken();
 const octokit = new Octokit({
-  auth: access_token_cookie.value
-})
+    auth: access_token_cookie
+});
 
 const datas = ref([]);
 const secrets = ref([]);
