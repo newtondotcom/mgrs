@@ -3,9 +3,9 @@ import { TRepo, type IRepo } from "~/types/types";
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
 
-const access_token_cookie = await getToken();
+const access_token = await getToken();
 const octokit = new Octokit({
-    auth: access_token_cookie
+    auth: access_token
 });
 
 const response = await octokit.request('GET /user/repos', {

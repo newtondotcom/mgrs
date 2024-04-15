@@ -1,5 +1,5 @@
 import { serverSupabaseUser } from '#supabase/server'
-import registerUser from '../data/user';
+import {registerUser} from '../data/user';
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event)
@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
       },
     })
 
-    registerUser(user.value.id, access_token)
+    registerUser(user.id, access_token)
 
     return {
       access_token: data.access_token,
