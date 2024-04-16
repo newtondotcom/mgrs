@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   },
   modules: ['@nuxtjs/supabase', '@nuxt/ui'],
   supabase: {
-    redirect: true,
+    redirect: false,
   },
   runtimeConfig: {
     public: {
