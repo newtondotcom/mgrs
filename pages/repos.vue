@@ -79,7 +79,7 @@ onMounted(async () => {
         </div>
       </template>
     </div>
-    <div class="flex justify-center mt-2">
+    <div class="flex justify-center mt-2 mb-6">
       <UPagination v-model="page" :page-count="pagecount" :total="length"
         :ui="{ rounded: 'first-of-type:rounded-s-md last-of-type:rounded-e-md' }" />
     </div>
