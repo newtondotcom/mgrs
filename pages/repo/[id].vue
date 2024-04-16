@@ -151,20 +151,20 @@ watch([datas], () => {
         </UButton>
       </div>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 lg:py-[60px] lg:px-[100px]">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 lg:py-[20px] lg:px-[100px]">
       <div v-if="noSecret" class="border text-gray-900 border-gray-300 bg-gray-100 p-4 rounded-md mb-4 dark:text-white dark:bg-gray-600 dark:border-gray-800">
         This repo has no secrets
       </div>
       <template v-if="datas.length === 0 && !noSecret">
-        <div v-for="n in 6" :key="n" class="border border-gray-300 bg-gray-100 p-4 rounded-md mb-4">
+        <div v-for="n in 6" :key="n" class="border border-gray-300 bg-gray-100 p-4 rounded-md mb-4 dark:bg-gray-600 dark:border-gray-800">
           <div class="flex items-center space-x-4">
-            <USkeleton class="h-12 w-12" :ui="{ rounded: 'rounded-full' }" />
+            <USkeleton class="h-12 w-full px-4" />
           </div>
         </div>
       </template>
       <template v-else>
         <div v-for="data in datas" :key="data.name"
-          class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer mb-4">
+          class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer mb-4 dark:text-white dark:bg-gray-600 dark:border-gray-800">
           {{ data.name }}
           <div class="flex flex-row justify-center mt-2">
             <UButton @click="changeVisibility(data)" class="mx-1" icon="i-heroicons-eye-16-solid" size="sm" color="primary" square variant="solid" />
@@ -183,7 +183,7 @@ watch([datas], () => {
   </div>
 
   <UModal v-model="isOpen">
-    <div class="px-10 py-8">
+    <div class="px-10">
       <UInput class="my-2" color="primary" variant="outline" placeholder="Name" v-model="modalName" />
       <UInput class="my-2" type="password" color="primary" variant="outline" placeholder="Value" v-model="modalValue" />
       <div class="flex justify-end">
