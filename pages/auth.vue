@@ -2,15 +2,18 @@
 const route = useRoute().query;
 const code = route.code;
 
+// code of github oauth
 if (code?.split('-').length > 1) {
-    navigateTo('/github');
-} else {
     const {data} = await useFetch("/api/token");
     const access_token = data.value?.access_token;
     if (access_token) {
         navigateTo('/repos');
+    } else {
+      navigateTo('/github');
     }
-    const { data2 } = await useFetch('/api/github', {
+// code of supabase redirectTo
+} else {
+    const {data2} = await useFetch('/api/github', {
     params: { code: code },
     });
     navigateTo('/repos');
