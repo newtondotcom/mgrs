@@ -129,7 +129,7 @@ async function updateValueToGithub(data: { value: string; name: string; }) {
 }
 
 
-async function handleFileSelection(direction: string) {
+async function handleFileSelection() {
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = '.env';
@@ -137,34 +137,63 @@ async function handleFileSelection(direction: string) {
   input.onchange = (event) => {
     const file = event.target?.files[0];
     if (file) {
-      readFileContents(file, direction);
+      readFileContents(file);
     }
   };
 }
 
-async function readFileContents(file: Blob, direction: string) {
+async function readFileContents(file: Blob) {
   const reader = new FileReader();
   reader.onload = (e) => {
     const contents = e.target?.result;
     console.log('File contents:', contents);
     const secrets = contents?.split('\n').map((line:string) => {
       let [name, value] = line.split('=');
-      value = value.replace(`"`, ``);
+      value = value.replaceAll(`"`, ``);
       return { name, value };
     });
     secrets.forEach(async (secret: { name: string; value: string; }) => {
       await addSecret(secret.name, secret.value);
     });
-
-    if (direction === 'down') {
-      console.log('Processing file for down arrow button action');
-    } else if (direction === 'up') {
-      console.log('Processing file for up arrow button action');
-    }
-  }
-  // Read the file as text
+  };
   reader.readAsText(file);
 }
+
+async function generateEnvFile() {
+  // Map datas.value to generate lines for the .env file
+  const envFile = datas.value.map((data) => {
+    let value = data.value;
+
+    // Check if value is not a number (contains non-numeric characters)
+    if (!/^-?\d+$/.test(value)) {
+      // Remove surrounding quotes from the value
+      value = `"${value}"`;
+    }
+
+    // Format the line in .env file format: NAME="VALUE"
+    return `${data.name}="${value}"`;
+  }).join('\n');
+
+  // Create a Blob containing the .env file content
+  const blob = new Blob([envFile], { type: 'text/plain' });
+
+  // Create a URL for the Blob
+  const url = URL.createObjectURL(blob);
+
+  // Create a link element to trigger the download
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '.env';
+
+  // Append the link to the document body and simulate a click
+  document.body.appendChild(a);
+  a.click();
+
+  // Cleanup: remove the link and revoke the URL to free resources
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 
 onMounted(async () => {
   await getSecretsList();
@@ -185,13 +214,13 @@ watch([datas], () => {
     <div class="px-4 flex flex-row justify-between items-center lg:px-[100px]">
       <UBreadcrumb :links="links" class="flex" />
       <div class="flex">
-        <UButton class="mr-2" color="white" variant="solid" @click="handleFileSelection('up')">
+        <UButton class="mr-2" color="white" variant="solid" @click="handleFileSelection">
           <span class="text-gray-500">
             <UIcon name="i-heroicons-arrow-down-tray-16-solid" />
             .env
           </span>
         </UButton>
-        <UButton class="mr-2" color="white" variant="solid" @click="handleFileSelection('up')">
+        <UButton class="mr-2" color="white" variant="solid" @click="generateEnvFile">
           <span class="text-gray-500">
             <UIcon name="i-heroicons-arrow-up-tray-16-solid" />
             .env
