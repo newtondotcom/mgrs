@@ -4,8 +4,8 @@ const supabase = useSupabaseClient()
 let avatar_url = ref('');
 let username = ref('');
 
-async function refreshInfos(){
-  const {data} = await useFetch("/api/infos");
+async function refreshInfos() {
+  const { data } = await useFetch("/api/infos");
   avatar_url.value = data.value?.avatar_url;
   username.value = data.value?.username;
 }
@@ -15,7 +15,7 @@ const userConnected = ref(false);
 watch(user, async () => {
   if (user.value) {
     userConnected.value = true;
-  await refreshInfos();
+    await refreshInfos();
   } else {
     userConnected.value = false;
   }
@@ -73,14 +73,12 @@ const items = [
 
 <template>
   <UDropdown v-if="userConnected" :items="items" :popper="{ placement: 'bottom-start' }">
-      <UButton color="gray">
-        <template #leading>
-          <div class="pl-4">{{ username }}</div>
-          <UAvatar chip-color="green" chip-text="" chip-position="top-right" size="sm" :src="avatar_url"
-            alt="Avatar" />
-        </template>
-      </UButton>
+    <UButton color="gray">
+      <template #leading>
+        <div class="pl-4">{{ username }}</div>
+        <UAvatar chip-color="green" chip-text="" chip-position="top-right" size="sm" :src="avatar_url" alt="Avatar" />
+      </template>
+    </UButton>
   </UDropdown>
   <UButton v-else @click="goSignIn">Sign in</UButton>
 </template>
-

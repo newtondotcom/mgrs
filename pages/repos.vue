@@ -24,7 +24,7 @@ watch([page], () => {
   printedDatas.value = datas.value.slice((page.value - 1) * pagecount.value, page.value * pagecount.value)
 })
 
-watch([search], () => {  
+watch([search], () => {
   page.value = 1
   printedDatas.value = datas.value.filter((data) => data.name.toLowerCase().includes(search.value.toLowerCase())).slice((page.value - 1) * pagecount.value, page.value * pagecount.value)
   length.value = datas.value.filter((data) => data.name.toLowerCase().includes(search.value.toLowerCase())).length
@@ -32,11 +32,11 @@ watch([search], () => {
 
 async function getRepositoriesList() {
   try {
-    const tempRepos =  await $fetch('/api/repos')
+    const tempRepos = await $fetch('/api/repos')
     datas.value = tempRepos.map((data) => {
       return {
         name: data.name,
-        id : data.id
+        id: data.id
       }
     })
     printedDatas.value = datas.value.slice(0, pagecount.value)
@@ -44,7 +44,7 @@ async function getRepositoriesList() {
     loading.value = false
   } catch (error) {
     console.error('Error fetching repositories:', error)
-    toast.add({ title: 'Fail', description: 'Failed to recover your repos'})
+    toast.add({ title: 'Fail', description: 'Failed to recover your repos' })
     navigateTo('/github')
   }
 }
@@ -69,9 +69,7 @@ onMounted(async () => {
         </div>
       </template>
       <template v-else>
-        <div v-for="data in printedDatas"
-          :key="data.id"
-          @click="navigateTo('/repo/' + data.name)"
+        <div v-for="data in printedDatas" :key="data.id" @click="navigateTo('/repo/' + data.name)"
           class="border border-gray-300 text-gray-900 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer dark:text-white dark:bg-gray-600 dark:border-gray-800">
           <div class="flex items-center space-x-4">
             <div class="text-left">
@@ -82,8 +80,8 @@ onMounted(async () => {
       </template>
     </div>
     <div class="flex justify-center mt-6">
-      <UPagination v-model="page" :page-count="pagecount" :total="length" :ui="{ rounded: 'first-of-type:rounded-s-md last-of-type:rounded-e-md' }"/>
+      <UPagination v-model="page" :page-count="pagecount" :total="length"
+        :ui="{ rounded: 'first-of-type:rounded-s-md last-of-type:rounded-e-md' }" />
     </div>
   </div>
 </template>
-
