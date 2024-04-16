@@ -60,10 +60,10 @@ onMounted(async () => {
     <div class="flex flex-row justify-center w-min-screen w-full">
       <UInput class="align-end" color="gray" variant="outline" placeholder="Search..." v-model="search" />
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:py-[60px] lg:px-[100px]">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:py-[40px] lg:px-[100px]">
       <template v-if="loading">
-        <div v-for="n in pagecount" :key="n" class="border border-gray-300 bg-gray-100 p-4 rounded-md">
-          <div class="flex items-center space-x-4">
+        <div v-for="n in pagecount" :key="n" class="border border-gray-300 bg-gray-100 p-4 rounded-md dark:bg-gray-600 dark:border-gray-800">
+          <div class="flex items-center space-x-4 ">
             <USkeleton class="h-4 w-full" />
           </div>
         </div>
@@ -79,7 +79,7 @@ onMounted(async () => {
         </div>
       </template>
     </div>
-    <div class="flex justify-center mt-6">
+    <div class="flex justify-center mt-2">
       <UPagination v-model="page" :page-count="pagecount" :total="length"
         :ui="{ rounded: 'first-of-type:rounded-s-md last-of-type:rounded-e-md' }" />
     </div>
