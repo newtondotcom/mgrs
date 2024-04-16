@@ -68,8 +68,8 @@ async function openDeleteModal(data: { name: string; }) {
 
 async function addSecret(name?: string, value?: string) {
   // Use name and value from modal if not provided
-  const modalNameToUse = name || modalName || "";
-  const modalValueToUse = value || modalValue || "";
+  const modalNameToUse = (typeof name === 'string') ? name : (modalName || "");
+  const modalValueToUse = (typeof value === 'string') ? value : (modalValue || "");
 
   if (!modalNameToUse || !modalValueToUse) {
     toast.add({ title: 'Error', description: 'Name and value are required' });
@@ -77,7 +77,6 @@ async function addSecret(name?: string, value?: string) {
   }
 
   try {
-
     // Add secret to the database
     await upsertSecret(modalNameToUse, modalValueToUse);
 
@@ -274,7 +273,7 @@ watch([datas], () => {
   </div>
 
   <UModal v-model="isOpen">
-    <div class="px-10">
+    <div class="px-10 py-8">
       <UInput class="my-2" color="primary" variant="outline" placeholder="Name" v-model="modalName" />
       <UInput class="my-2" type="password" color="primary" variant="outline" placeholder="Value" v-model="modalValue" />
       <div class="flex justify-end">
