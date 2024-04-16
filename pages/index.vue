@@ -1,6 +1,11 @@
 <script setup lang="ts">
+const user = useSupabaseUser();
 function goDashoard() {
-    navigateTo('/login')
+    if (user.value) {
+        navigateTo('/repos')
+    } else {
+        navigateTo('/login')
+    }
 }
 
 const isDarkMode = ref(navigator?.userAgent.includes('prefers-color-scheme: dark'))
