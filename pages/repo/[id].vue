@@ -41,9 +41,9 @@ async function upsertSecret(secret_name : string, secret_value : string) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      name: name,
-      value: secret_value,
-      secret: secret_name
+      repo_name: name,
+      secret_value: secret_value,
+      secret_name: secret_name
     })
   })
   if (response.status === 201) {

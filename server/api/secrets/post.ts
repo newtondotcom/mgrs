@@ -10,10 +10,10 @@ export default defineEventHandler(async (event) => {
     const token = await getToken(user.id)
     const username = user.user_metadata.user_name
     const body = await readBody(event)
-    const repoName = body.name;
-    const secretName = body.secret;
-    const value = body.value;
-    console.log('repoName', repoName, 'secretName', secretName, 'value', value)
+    const repoName = body.repo_name;
+    const secretName = body.secret_name;
+    const value = body.secret_value;
+    console.log('repoName :', repoName, ', secretName :', secretName, ', value :', value)
     const publicKey = await getPublicKeySaved(user.id, repoName);
     const encryptedValue = await cryptSecret(value, publicKey.public_key)
     const octokit = new Octokit({
