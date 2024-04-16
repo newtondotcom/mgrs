@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const user = useSupabaseUser();
-const supabase = useSupabaseClient()
+const client = useSupabaseAuthClient()
 let avatar_url = ref('');
 let username = ref('');
 
@@ -23,7 +23,7 @@ watch(user, async () => {
 }, { immediate: true });
 
 async function logout() {
-  await supabase.auth.signOut()
+  await client.auth.signOut()
   navigateTo('/');
 }
 
