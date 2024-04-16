@@ -2,6 +2,10 @@
 function goDashoard() {
     navigateTo('/dashboard')
 }
+
+const isDarkMode = ref(navigator?.userAgent.includes('prefers-color-scheme: dark'))
+
+let imageSrc = isDarkMode.value ? '/secrets_dark.png' : '/secrets.png'
 </script>
 
 <template>
@@ -24,7 +28,7 @@ function goDashoard() {
             </div>
         </div>
 
-        <img alt="" src="~/public/secrets.png"
+        <img alt="" :src="imageSrc"
             class="h-full w-full sm:h-[calc(100%_-_2rem)] sm:self-end sm:rounded-ss-[30px] md:h-[calc(100%_-_4rem)] md:rounded-ss-[20px]" />
     </section>
 </template>

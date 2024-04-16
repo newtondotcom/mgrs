@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 const user = useSupabaseUser()
 const isAuth = ref(false)
 if (user.value) {
