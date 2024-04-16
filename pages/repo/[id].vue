@@ -77,12 +77,20 @@ async function addSecret(name?: string, value?: string) {
   }
 
   try {
+
+    // Add secret to the database
     await upsertSecret(modalNameToUse, modalValueToUse);
 
     // Check if secret already exists (case-insensitive)
     const existingSecret = datas.value.find((data) => data.name.toUpperCase() === modalNameToUse.toUpperCase());
     if (existingSecret) {
-      toast.add({ title: 'Error', description: 'Secret already exists' });
+      toast.add({ title: 'Error', description: 'Secret already exists but its value has been updated !' });
+      datas.value = datas.value.map((data) => {
+        if (data.name.toUpperCase() === modalNameToUse.toUpperCase()) {
+          data.value = modalValueToUse;
+        }
+        return data;
+      });
       return;
     }
 
@@ -146,13 +154,13 @@ async function readFileContents(file: Blob) {
   const reader = new FileReader();
   reader.onload = (e) => {
     const contents = e.target?.result;
-    console.log('File contents:', contents);
     const secrets = contents?.split('\n').map((line:string) => {
       let [name, value] = line.split('=');
       value = value.replaceAll(`"`, ``);
       return { name, value };
     });
     secrets.forEach(async (secret: { name: string; value: string; }) => {
+      console.log(secret?.name, secret?.value);
       await addSecret(secret.name, secret.value);
     });
   };
