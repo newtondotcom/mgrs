@@ -128,7 +128,7 @@ async function updateValueToGithub(data: { value: string; name: string; }) {
   modalValue = data.value;
   modalName = data.name;
   try {
-    await upsertSecret(name, modalValue);
+    await upsertSecret(modalValue, modalValue);
     toast.add({ title: 'Success', description: 'Secret updated' });
   } catch (error) {
     console.error('Error updating secret:', error);
