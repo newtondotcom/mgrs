@@ -17,6 +17,7 @@ watch(user, async () => {
     userConnected.value = true;
     await refreshInfos();
   } else {
+    console.log("user disconnected")
     userConnected.value = false;
   }
 }, { immediate: true });
