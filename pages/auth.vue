@@ -2,13 +2,15 @@
 const route = useRoute().query;
 const code = route.code;
 
-const {data} = await useFetch("/api/token");
-const access_token = data.value.access_token;
-
 if (code?.split('-').length > 1) {
     navigateTo('/github');
 } else {
-    const { data } = await useFetch('/api/github', {
+    const {data} = await useFetch("/api/token");
+    const access_token = data.value?.access_token;
+    if (access_token) {
+        navigateTo('/repos');
+    }
+    const { data2 } = await useFetch('/api/github', {
     params: { code: code },
     });
     navigateTo('/repos');
