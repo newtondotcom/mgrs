@@ -61,7 +61,7 @@ if (user.value) {
   </div>
 
   <footer>
-    <div class="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8 justify-center flex-col">
+    <div class="mx-auto max-w-5xl px-4 py-2 sm:px-6 lg:px-8 justify-center flex-col">
       <div class="flex justify-center text-primary-500">
         <a class="block text-primary-500" href="/">
           <span class="sr-only">Home</span>
