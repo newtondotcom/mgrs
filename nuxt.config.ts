@@ -17,6 +17,7 @@ export default defineNuxtConfig({
       GH_CLIENT_ID: process.env.GH_CLIENT_ID,
       GH_CLIENT_SECRET: process.env.GH_CLIENT_SECRET,
       ENCRYPTION_KEY: process.env.ENCRYPTION_KEY,
+      PUBLIC_VERCEL_URL: process.env.PUBLIC_VERCEL_URL,
     },
   },
   security: {
