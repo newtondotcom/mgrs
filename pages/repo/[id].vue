@@ -211,8 +211,8 @@ watch([datas], () => {
 
 <template>
   <div class="text-center">
-    <div class="px-4 flex flex-row justify-between items-center lg:px-[100px]">
-      <UBreadcrumb :links="links" class="flex" />
+    <div class="flex flex-row justify-between items-center">
+      <UBreadcrumb :links="links" class="mb-6 ml-6 lg:px-[100px]" />
       <div class="flex">
         <UButton class="mr-2" color="white" variant="solid" @click="handleFileSelection">
           <span class="text-gray-500">
