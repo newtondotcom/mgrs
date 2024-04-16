@@ -4,7 +4,7 @@ const email = ref('')
 const config = useRuntimeConfig()
 const getRedirectUrl = () => {  
   let url =
-    config.PUBLIC_VERCEL_URL ??
+    config.public.PUBLIC_VERCEL_URL ??
     'http://localhost:3000/auth'
   return url
 }
