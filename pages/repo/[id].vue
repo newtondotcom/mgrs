@@ -220,16 +220,16 @@ watch([datas], () => {
   <div class="text-center">
     <div class="flex flex-row justify-between items-center">
       <UBreadcrumb :links="links" class="mb-6 ml-6 lg:px-[100px]" />
-      <div class="flex">
+      <div class="flex mr-6">
         <UButton class="mr-2" color="white" variant="solid" @click="handleFileSelection">
           <span class="text-gray-500">
-            <UIcon name="i-heroicons-arrow-down-tray-16-solid" />
+            <UIcon name="i-heroicons-arrow-up-tray-16-solid" />
             .env
           </span>
         </UButton>
         <UButton class="mr-2" color="white" variant="solid" @click="generateEnvFile">
           <span class="text-gray-500">
-            <UIcon name="i-heroicons-arrow-up-tray-16-solid" />
+            <UIcon name="i-heroicons-arrow-down-tray-16-solid" />
             .env
           </span>
         </UButton>
