@@ -8,7 +8,7 @@ if (user.value) {
 </script>
 
 <template>
-  <header class="mb-[50px]">
+  <header class="mb-[20px]">
     <div class="mx-auto flex h-16 max-w-screen-xl items-center gap-8 px-4 sm:px-6 lg:px-8">
       <div class="flex justify-center text-primary-500">
         <a class="block text-primary-500" href="/">
@@ -60,7 +60,7 @@ if (user.value) {
   </div>
 
   <footer>
-    <div class="mx-auto max-w-5xl px-4 py-2 sm:px-6 lg:px-8 justify-center flex-col">
+    <div class="mx-auto max-w-5xl px-4 py-2 sm:px-6 lg:px-8 justify-center flex-col mb-[30px]">
       <div class="flex justify-center text-primary-500">
         <a class="block text-primary-500" href="/">
           <span class="sr-only">Home</span>
@@ -73,7 +73,7 @@ if (user.value) {
         Made with ❤️ in Paris 🥐
       </p>
 
-      <ul class="mt-12 flex justify-center gap-6 md:gap-8">
+      <ul class="mt-8 flex justify-center gap-6 md:gap-8">
         <li>
           <a href="https://github.com/newtondotcom/mgrs" rel="noreferrer" target="_blank"
             class="text-primary-400 transition hover:text-primary-400/75">
