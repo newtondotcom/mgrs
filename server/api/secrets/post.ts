@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
     const repoName = body.name;
     const secretName = body.secret;
     const value = body.value;
+    console.log('repoName', repoName, 'secretName', secretName, 'value', value)
     const publicKey = await getPublicKeySaved(user.id, repoName);
     const encryptedValue = await cryptSecret(value, publicKey.public_key)
     const octokit = new Octokit({
