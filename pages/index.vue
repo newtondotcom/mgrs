@@ -1,6 +1,6 @@
 <script setup lang="ts">
 function goDashoard() {
-    navigateTo('/dashboard')
+    navigateTo('/login')
 }
 
 const isDarkMode = ref(navigator?.userAgent.includes('prefers-color-scheme: dark'))
