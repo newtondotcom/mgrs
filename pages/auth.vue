@@ -4,26 +4,15 @@ const code = route.code;
 
 const {data} = await useFetch("/api/token");
 const access_token = data.value.access_token;
-const avatar_url_cookie = useCookie('avatar_url');
-const username_cookie = useCookie('username');
 
-const user = useSupabaseUser();
-
-if (code) {
+if (code?.split('-').length > 1) {
+    navigateTo('/github');
+} else {
     const { data } = await useFetch('/api/github', {
     params: { code: code },
     });
     navigateTo('/repos');
-} else {
-    navigateTo('/github');
 }
-
-watch(user, () => {
-  if (user.value) {
-    avatar_url_cookie.value = user.value.user_metadata.avatar_url;
-    username_cookie.value = user.value.user_metadata.user_name;
-  }
-}, { immediate: true });
 </script>
 
 <template>
