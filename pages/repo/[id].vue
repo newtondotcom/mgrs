@@ -22,11 +22,7 @@ const modalDelete = ref(false)
 let modalValue = ""
 let modalName = ""
 
-let repoPublicKey = ""
-let repoKeyId = ""
-
 const datas = ref([]);
-const secrets = ref([]);
 
 async function getSecretsList() {
   try {
@@ -40,14 +36,14 @@ async function getSecretsList() {
   }
 }
 
-async function upsertSecret() {
+async function upsertSecret(secret_name : string, secret_value : string) {
   const response = await $fetch('/api/secrets/post', {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       name: name,
-      value: modalValue,
-      secret : modalName
+      value: secret_value,
+      secret: secret_name
     })
   })
   if (response.status === 201) {
@@ -65,57 +61,109 @@ async function removeSecret() {
   toast.add({ title: 'Success', description: 'Secret deleted', status: 'success' })
 }
 
-async function openDeleteModal(data) {
+async function openDeleteModal(data: { name: string; }) {
   modalDelete.value = true;
   modalName = data.name;
 }
 
-async function addSecret() {
-  if (modalName === "" || modalValue === "") {
-    toast.add({ title: 'Error', description: 'Name and value are required'});
+async function addSecret(name?: string, value?: string) {
+  // Use name and value from modal if not provided
+  const modalNameToUse = name || modalName || "";
+  const modalValueToUse = value || modalValue || "";
+
+  if (!modalNameToUse || !modalValueToUse) {
+    toast.add({ title: 'Error', description: 'Name and value are required' });
     return;
   }
+
   try {
-    await upsertSecret();
-    // check if secret already exists
-    const existingSecret = datas.value.find((data) => data.name === modalName.toUpperCase());
+    await upsertSecret(modalNameToUse, modalValueToUse);
+
+    // Check if secret already exists (case-insensitive)
+    const existingSecret = datas.value.find((data) => data.name.toUpperCase() === modalNameToUse.toUpperCase());
     if (existingSecret) {
-      toast.add({ title: 'Error', description: 'Secret already exists'});
+      toast.add({ title: 'Error', description: 'Secret already exists' });
       return;
     }
-    // add secret to datas array
+
+    // Add secret to datas array (assuming datas is reactive)
     datas.value.push({
-      name: modalName,
+      name: modalNameToUse,
       visibility: "password",
-      value: modalValue
+      value: modalValueToUse
     });
+
+    // Update noSecret flag (assuming it's reactive)
     noSecret.value = false;
-    // toast success
-    toast.add({ title: 'Success', description: 'Secret added'});
+
+    // Toast success message
+    toast.add({ title: 'Success', description: 'Secret added' });
   } catch (error) {
     console.error('Error adding secret:', error);
+    toast.add({ title: 'Error', description: 'Failed to add secret' });
   }
+
+  // Reset modal state
   isOpen.value = false;
   modalName = "";
   modalValue = "";
 }
 
-function changeVisibility(dataf) {
+
+function changeVisibility(dataf: { name: any; }) {
   const secret = datas.value.find((data) => data.name === dataf.name);
   if (secret) {
     secret.visibility = secret.visibility === "password" ? "text" : "password";
   }
 }
 
-async function updateValueToGithub(data) {
-    modalValue = data.value;
-    modalName = data.name;
-    try {
-    await upsertSecret();
-    toast.add({ title: 'Success', description: 'Secret updated'});
-    } catch (error) {
+async function updateValueToGithub(data: { value: string; name: string; }) {
+  modalValue = data.value;
+  modalName = data.name;
+  try {
+    await upsertSecret(name, modalValue);
+    toast.add({ title: 'Success', description: 'Secret updated' });
+  } catch (error) {
     console.error('Error updating secret:', error);
+  }
+}
+
+
+async function handleFileSelection(direction: string) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.env';
+  input.click();
+  input.onchange = (event) => {
+    const file = event.target?.files[0];
+    if (file) {
+      readFileContents(file, direction);
     }
+  };
+}
+
+async function readFileContents(file: Blob, direction: string) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const contents = e.target?.result;
+    console.log('File contents:', contents);
+    const secrets = contents?.split('\n').map((line:string) => {
+      let [name, value] = line.split('=');
+      value = value.replace(`"`, ``);
+      return { name, value };
+    });
+    secrets.forEach(async (secret: { name: string; value: string; }) => {
+      await addSecret(secret.name, secret.value);
+    });
+
+    if (direction === 'down') {
+      console.log('Processing file for down arrow button action');
+    } else if (direction === 'up') {
+      console.log('Processing file for up arrow button action');
+    }
+  }
+  // Read the file as text
+  reader.readAsText(file);
 }
 
 onMounted(async () => {
@@ -137,13 +185,13 @@ watch([datas], () => {
     <div class="px-4 flex flex-row justify-between items-center lg:px-[100px]">
       <UBreadcrumb :links="links" class="flex" />
       <div class="flex">
-        <UButton class="mr-2" color="white" variant="solid">
+        <UButton class="mr-2" color="white" variant="solid" @click="handleFileSelection('up')">
           <span class="text-gray-500">
             <UIcon name="i-heroicons-arrow-down-tray-16-solid" />
             .env
           </span>
         </UButton>
-        <UButton class="mr-2" color="white" variant="solid">
+        <UButton class="mr-2" color="white" variant="solid" @click="handleFileSelection('up')">
           <span class="text-gray-500">
             <UIcon name="i-heroicons-arrow-up-tray-16-solid" />
             .env
@@ -152,11 +200,13 @@ watch([datas], () => {
       </div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 lg:py-[20px] lg:px-[100px]">
-      <div v-if="noSecret" class="border text-gray-900 border-gray-300 bg-gray-100 p-4 rounded-md mb-4 dark:text-white dark:bg-gray-600 dark:border-gray-800">
+      <div v-if="noSecret"
+        class="border text-gray-900 border-gray-300 bg-gray-100 p-4 rounded-md mb-4 dark:text-white dark:bg-gray-600 dark:border-gray-800">
         This repo has no secrets
       </div>
       <template v-if="datas.length === 0 && !noSecret">
-        <div v-for="n in 6" :key="n" class="border border-gray-300 bg-gray-100 p-4 rounded-md mb-4 dark:bg-gray-600 dark:border-gray-800">
+        <div v-for="n in 6" :key="n"
+          class="border border-gray-300 bg-gray-100 p-4 rounded-md mb-4 dark:bg-gray-600 dark:border-gray-800">
           <div class="flex items-center space-x-4">
             <USkeleton class="h-12 w-full px-4" />
           </div>
@@ -167,10 +217,14 @@ watch([datas], () => {
           class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer mb-4 dark:text-white dark:bg-gray-600 dark:border-gray-800">
           {{ data.name }}
           <div class="flex flex-row justify-center mt-2">
-            <UButton @click="changeVisibility(data)" class="mx-1" icon="i-heroicons-eye-16-solid" size="sm" color="primary" square variant="solid" />
-            <UInput :key="data.name" v-model="data.value" :type="data.visibility" color="primary" variant="outline" placeholder="Search..." />
-            <UButton @click="updateValueToGithub(data)" class="ml-1" icon="i-heroicons-check-16-solid" size="sm" color="primary" square variant="solid" />
-            <UButton @click="openDeleteModal(data)" class="ml-1" icon="i-heroicons-trash-solid" size="sm" color="primary" square variant="solid"/>
+            <UButton @click="changeVisibility(data)" class="mx-1" icon="i-heroicons-eye-16-solid" size="sm"
+              color="primary" square variant="solid" />
+            <UInput :key="data.name" v-model="data.value" :type="data.visibility" color="primary" variant="outline"
+              placeholder="Search..." />
+            <UButton @click="updateValueToGithub(data)" class="ml-1" icon="i-heroicons-check-16-solid" size="sm"
+              color="primary" square variant="solid" />
+            <UButton @click="openDeleteModal(data)" class="ml-1" icon="i-heroicons-trash-solid" size="sm"
+              color="primary" square variant="solid" />
           </div>
         </div>
       </template>
@@ -189,7 +243,7 @@ watch([datas], () => {
       <div class="flex justify-end">
         <UButton @click="addSecret">
           <template #leading>
-            <div >Yes</div>
+            <div>Yes</div>
           </template>
         </UButton>
         <UButton @click="isOpen = false" label="No" class="mx-2 px-4 py-2" />
