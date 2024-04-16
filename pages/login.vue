@@ -1,10 +1,18 @@
 <script setup lang="ts">
 const supabase = useSupabaseClient()
 const email = ref('')
+const config = useRuntimeConfig()
+const getRedirectUrl = () => {  
+  let url =
+    config.PUBLIC_VERCEL_URL ??
+    'http://localhost:3000/auth'
+  return url
+}
 
 const signInWithGithub = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'github'
+    provider: 'github', 
+    options: { redirectTo: getRedirectUrl() }
     })
     if (error) console.log(error)
 }
