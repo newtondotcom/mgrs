@@ -3,9 +3,9 @@ const supabase = useSupabaseClient()
 const email = ref('')
 const config = useRuntimeConfig()
 const getRedirectUrl = () => {  
-  let url = "https://mgrs.vercel.app/auth"
-    //config.public.PUBLIC_VERCEL_URL ??
-    //'http://localhost:3000/auth'
+  let url =
+    config.public.PUBLIC_VERCEL_URL ??
+    'http://localhost:3000/auth'
   return url
 }
 
