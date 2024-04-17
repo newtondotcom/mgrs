@@ -58,7 +58,7 @@ onMounted(async () => {
   <div class="text-center">
     <UBreadcrumb :links="links" class="mb-6 ml-6 lg:px-[100px]" />
     <div class="flex flex-row justify-center w-min-screen w-full">
-      <UInput class="align-end" color="gray" variant="outline" placeholder="Search..." v-model="search" />
+      <UInput v-model="search" class="align-end" color="gray" variant="outline" placeholder="Search..." />
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:py-[40px] lg:px-[100px]">
       <template v-if="loading">
@@ -69,8 +69,9 @@ onMounted(async () => {
         </div>
       </template>
       <template v-else>
-        <div v-for="data in printedDatas" :key="data.id" @click="navigateTo('/repo/' + data.name)"
-          class="border border-gray-300 text-gray-900 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer dark:text-white dark:bg-gray-600 dark:border-gray-800">
+        <div
+v-for="data in printedDatas" :key="data.id" class="border border-gray-300 text-gray-900 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer dark:text-white dark:bg-gray-600 dark:border-gray-800"
+          @click="navigateTo('/repo/' + data.name)">
           <div class="flex items-center space-x-4">
             <div class="text-left">
               <div class="font-medium">{{ data.name }}</div>
@@ -80,7 +81,8 @@ onMounted(async () => {
       </template>
     </div>
     <div class="flex justify-center mt-2 mb-6">
-      <UPagination v-model="page" :page-count="pagecount" :total="length"
+      <UPagination
+v-model="page" :page-count="pagecount" :total="length"
         :ui="{ rounded: 'first-of-type:rounded-s-md last-of-type:rounded-e-md' }" />
     </div>
   </div>

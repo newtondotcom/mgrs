@@ -236,12 +236,14 @@ watch([datas], () => {
       </div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 lg:py-[20px] lg:px-[100px]">
-      <div v-if="noSecret"
+      <div
+v-if="noSecret"
         class="border text-gray-900 border-gray-300 bg-gray-100 p-4 rounded-md mb-4 dark:text-white dark:bg-gray-600 dark:border-gray-800">
         This repo has no secrets
       </div>
       <template v-if="datas.length === 0 && !noSecret">
-        <div v-for="n in 6" :key="n"
+        <div
+v-for="n in 6" :key="n"
           class="border border-gray-300 bg-gray-100 p-4 rounded-md mb-4 dark:bg-gray-600 dark:border-gray-800">
           <div class="flex items-center space-x-4">
             <USkeleton class="h-12 w-full px-4" />
@@ -249,40 +251,46 @@ watch([datas], () => {
         </div>
       </template>
       <template v-else>
-        <div v-for="data in datas" :key="data.name"
+        <div
+v-for="data in datas" :key="data.name"
           class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer mb-4 dark:text-white dark:bg-gray-600 dark:border-gray-800">
           {{ data.name }}
           <div class="flex flex-row justify-center mt-2">
-            <UButton @click="changeVisibility(data)" class="mx-1" icon="i-heroicons-eye-16-solid" size="sm"
-              color="primary" square variant="solid" />
-            <UInput :key="data.name" v-model="data.value" :type="data.visibility" color="primary" variant="outline"
+            <UButton
+class="mx-1" icon="i-heroicons-eye-16-solid" size="sm" color="primary"
+              square variant="solid" @click="changeVisibility(data)" />
+            <UInput
+:key="data.name" v-model="data.value" :type="data.visibility" color="primary" variant="outline"
               placeholder="Search..." />
-            <UButton @click="updateValueToGithub(data)" class="ml-1" icon="i-heroicons-check-16-solid" size="sm"
-              color="primary" square variant="solid" />
-            <UButton @click="openDeleteModal(data)" class="ml-1" icon="i-heroicons-trash-solid" size="sm"
-              color="primary" square variant="solid" />
+            <UButton
+class="ml-1" icon="i-heroicons-check-16-solid" size="sm" color="primary"
+              square variant="solid" @click="updateValueToGithub(data)" />
+            <UButton
+class="ml-1" icon="i-heroicons-trash-solid" size="sm" color="primary"
+              square variant="solid" @click="openDeleteModal(data)" />
           </div>
         </div>
       </template>
       <div
         class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer mb-4 flex justify-center items-center dark:text-white dark:bg-gray-600 dark:border-gray-800">
-        <UButton class="flex" @click="isOpen = true" icon="i-heroicons-plus-16-solid" size="sm" color="primary" square
-          variant="solid" />
+        <UButton
+class="flex" icon="i-heroicons-plus-16-solid" size="sm" color="primary" square variant="solid"
+          @click="isOpen = true" />
       </div>
     </div>
   </div>
 
   <UModal v-model="isOpen">
     <div class="px-10 py-8">
-      <UInput class="my-2" color="primary" variant="outline" placeholder="Name" v-model="modalName" />
-      <UInput class="my-2" type="password" color="primary" variant="outline" placeholder="Value" v-model="modalValue" />
+      <UInput v-model="modalName" class="my-2" color="primary" variant="outline" placeholder="Name" />
+      <UInput v-model="modalValue" class="my-2" type="password" color="primary" variant="outline" placeholder="Value" />
       <div class="flex justify-end">
         <UButton @click="addSecret">
           <template #leading>
             <div>Yes</div>
           </template>
         </UButton>
-        <UButton @click="isOpen = false" label="No" class="mx-2 px-4 py-2" />
+        <UButton label="No" class="mx-2 px-4 py-2" @click="isOpen = false" />
       </div>
     </div>
   </UModal>
@@ -291,12 +299,12 @@ watch([datas], () => {
     <div class="px-10 py-8">
       Do you want to delete this secret?
       <div class="flex justify-end">
-        <UButton @click="removeSecret" class="mx-2 px-4 py-2">
+        <UButton class="mx-2 px-4 py-2" @click="removeSecret">
           <template #leading>
             <div>Yes</div>
           </template>
         </UButton>
-        <UButton @click="modalDelete = false" label="No" class="mx-2 px-4 py-2" />
+        <UButton label="No" class="mx-2 px-4 py-2" @click="modalDelete = false" />
       </div>
     </div>
   </UModal>

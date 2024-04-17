@@ -23,9 +23,9 @@ export function decryptSecretGhPrisma(ciphertext: string, key: string): string {
 
 export async function cryptSecretGh(value: string, repoPublicKey: string) {
     await sodium.ready;
-    let binkey = sodium.from_base64(repoPublicKey, sodium.base64_variants.ORIGINAL)
-    let binsec = sodium.from_string(value)
-    let encBytes = sodium.crypto_box_seal(binsec, binkey)
-    let encryptSecretGhPrismaedValue = sodium.to_base64(encBytes, sodium.base64_variants.ORIGINAL)
+    const binkey = sodium.from_base64(repoPublicKey, sodium.base64_variants.ORIGINAL)
+    const binsec = sodium.from_string(value)
+    const encBytes = sodium.crypto_box_seal(binsec, binkey)
+    const encryptSecretGhPrismaedValue = sodium.to_base64(encBytes, sodium.base64_variants.ORIGINAL)
     return encryptSecretGhPrismaedValue
 }

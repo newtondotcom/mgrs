@@ -1,7 +1,7 @@
 import prisma from "~/server/data/prisma"
 
 export async function registerUser(user_id : string, access_token :string, username : string, avatar_url : string) {
-    const userPrisma = await prisma.user.upsert({
+    await prisma.user.upsert({
         where: { user_id },
         update: { access_token , username, avatar_url},
         create: { user_id, access_token , username, avatar_url},

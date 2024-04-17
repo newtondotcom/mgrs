@@ -10,7 +10,7 @@ function goDashoard() {
 
 const isDarkMode = ref(navigator?.userAgent.includes('prefers-color-scheme: dark'))
 
-let imageSrc = isDarkMode.value ? '/secrets_dark.png' : '/secrets.png'
+const imageSrc = isDarkMode.value ? '/secrets_dark.png' : '/secrets.png'
 </script>
 
 <template>
@@ -33,7 +33,8 @@ let imageSrc = isDarkMode.value ? '/secrets_dark.png' : '/secrets.png'
             </div>
         </div>
 
-        <img alt="" :src="imageSrc"
-            class="h-full w-full sm:self-end sm:rounded-ss-[30px] md:rounded-ss-[20px]" />
+        <img
+alt="" :src="imageSrc"
+            class="h-full w-full sm:self-end sm:rounded-ss-[30px] md:rounded-ss-[20px]" >
     </section>
 </template>

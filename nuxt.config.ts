@@ -46,6 +46,8 @@ export default defineNuxtConfig({
     apiHost : 'https://plaunwt.duckdns.org'
   },
   eslint: {
-    // options here
+    config: {
+      stylistic: true // <---
+    }
   }
 })

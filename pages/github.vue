@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
 const useGithubApp = async () => {
-  let link = "https://github.com/login/oauth/authorize"
+  const link = "https://github.com/login/oauth/authorize"
   window.location.href = `${link}?client_id=${config.public.GH_CLIENT_ID}&response_type=code&scope=repo,admin:org`
 }
 </script>

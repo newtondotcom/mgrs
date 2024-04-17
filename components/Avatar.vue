@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const user = useSupabaseUser();
 const supabase = useSupabaseClient()
-let avatar_url = ref('');
-let username = ref('');
+const avatar_url = ref('');
+const username = ref('');
 
 async function refreshInfos() {
   const { data } = await useFetch("/api/infos");

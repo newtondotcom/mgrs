@@ -13,7 +13,7 @@ if (code?.split('-').length > 1) {
     }
 // code of supabase redirectTo
 } else {
-    const {data2} = await useFetch('/api/github', {
+    const {data} = await useFetch('/api/github', {
     params: { code: code },
     });
     navigateTo('/repos');
@@ -23,7 +23,7 @@ if (code?.split('-').length > 1) {
 <template>
   <div id="loading-screen" class="w-full h-full fixed block top-0 left-0 bg-white opacity-75 z-50">
     <span class="text-green-500 opacity-75 top-1/2 my-0 mx-auto block relative w-0 h-0">
-      <i class="fas fa-circle-notch fa-spin fa-5x"></i>
+      <i class="fas fa-circle-notch fa-spin fa-5x"/>
     </span>
   </div>
 </template>
