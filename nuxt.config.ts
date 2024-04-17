@@ -8,7 +8,7 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ['@nuxtjs/supabase', '@nuxt/ui', "@nuxtjs/plausible"],
+  modules: ['@nuxtjs/supabase', '@nuxt/ui', "@nuxtjs/plausible", "@nuxt/eslint"],
   supabase: {
     redirect: false,
   },
@@ -45,4 +45,7 @@ export default defineNuxtConfig({
     //ignoredHostnames: ['localhost'],
     apiHost : 'https://plaunwt.duckdns.org'
   },
+  eslint: {
+    // options here
+  }
 })
