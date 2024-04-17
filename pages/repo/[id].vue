@@ -68,8 +68,9 @@ async function openDeleteModal(data: { name: string; }) {
 
 async function addSecret(name?: string, value?: string) {
   // Use name and value from modal if not provided
-  const modalNameToUse = (typeof name === 'string') ? name : (modalName || "");
+  let modalNameToUse = (typeof name === 'string') ? name : (modalName || "");
   const modalValueToUse = (typeof value === 'string') ? value : (modalValue || "");
+  modalNameToUse = modalNameToUse.toUpperCase().trim();
 
   if (!modalNameToUse || !modalValueToUse) {
     toast.add({ title: 'Error', description: 'Name and value are required' });
@@ -128,7 +129,7 @@ async function updateValueToGithub(data: { value: string; name: string; }) {
   modalValue = data.value;
   modalName = data.name;
   try {
-    await upsertSecret(modalValue, modalValue);
+    await upsertSecret(modalName, modalValue);
     toast.add({ title: 'Success', description: 'Secret updated' });
   } catch (error) {
     console.error('Error updating secret:', error);
