@@ -1,5 +1,5 @@
 import { serverSupabaseUser } from '#supabase/server'
-import { mergeRepos } from '../data/repos';
+import { RepoRenamedAndCreateInPrisma } from '../data/repos';
 import { getToken } from '../data/user';
 import { Octokit } from "@octokit/core";
 
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
         per_page: 1000
     });
     const ghRepos = response.data;
-    mergeRepos(ghRepos, user.id);
+    RepoRenamedAndCreateInPrisma(ghRepos, user.id);
     return ghRepos;
 });
 

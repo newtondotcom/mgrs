@@ -2,7 +2,7 @@ import { serverSupabaseUser } from '#supabase/server'
 import { Octokit } from '@octokit/core'
 import { getToken } from '~/server/data/user'
 import { getPublicKeySaved, getSavedSecrets, mergeSecretsGhPrisma, upsertPublicKey } from '~/server/data/secrets'
-import { decrypt } from '~/server/data/crypto';
+import { decryptSecretGhPrisma } from '~/server/data/crypto';
 
 let token = "";
 let user_id = "";
@@ -22,11 +22,11 @@ export default defineEventHandler(async (event) => {
     const savedSecrets = await getSavedSecrets(user?.id, repoName)
     const mergedSecrets = tempSecrets.map(secret => {
         let value = savedSecrets.find(savedSecret => savedSecret.name === secret.name)?.value;
-        let decryptedValue = value ? decrypt(value, config.public.ENCRYPTION_KEY) : "";
+        let decryptSecretGhPrismaedValue = value ? decryptSecretGhPrisma(value, config.public.encryptSecretGhPrismaION_KEY) : "";
         return {
             name: secret.name,
             visibility: "password",
-            value: decryptedValue
+            value: decryptSecretGhPrismaedValue
         }
     })
     mergeSecretsGhPrisma(tempSecrets, savedSecrets, repoName, user?.id)

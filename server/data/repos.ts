@@ -1,13 +1,13 @@
 import prisma from "./prisma";
 
-export async function getRepos(user_id : string) {
+export async function getReposList(user_id : string) {
     return await prisma.repository.findMany({
         where: { user_id },
     })
 }
 
-export async function mergeRepos(ghRepos :any[], user_id : string){
-    const savedRepos = await getRepos(user_id);
+export async function RepoRenamedAndCreateInPrisma(ghRepos :any[], user_id : string){
+    const savedRepos = await getReposList(user_id);
     for (let i = 0; i < ghRepos.length; i++) {
         const ghRepo = ghRepos[i];
         const savedRepo = savedRepos.find((repo) => repo.repository_id === ghRepo.id);

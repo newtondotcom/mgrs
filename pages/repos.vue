@@ -30,7 +30,7 @@ watch([search], () => {
   length.value = datas.value.filter((data) => data.name.toLowerCase().includes(search.value.toLowerCase())).length
 })
 
-async function getRepositoriesList() {
+async function getReposListitoriesList() {
   try {
     const tempRepos = await $fetch('/api/repos')
     datas.value = tempRepos.map((data) => {
@@ -50,7 +50,7 @@ async function getRepositoriesList() {
 }
 
 onMounted(async () => {
-  await getRepositoriesList();
+  await getReposListitoriesList();
 })
 </script>
 

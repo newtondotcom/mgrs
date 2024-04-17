@@ -18,7 +18,7 @@ export async function getToken(user_id : string) {
     return token.access_token
 }
 
-export async function getInfos(user_id : string) {
+export async function getUsernameAvatar(user_id : string) {
     return await prisma.user.findUnique({
         where: { user_id },
         select : {
