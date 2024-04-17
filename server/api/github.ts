@@ -1,52 +1,66 @@
-import { serverSupabaseUser } from '#supabase/server'
-import {registerUser} from '../data/user';
+import { serverSupabaseUser } from '#supabase/server';
+import { registerUser } from '../data/user';
 
+// Define the event handler for the main event
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig(event)
-  const query = getQuery(event)
+  const config = useRuntimeConfig(event); // Retrieve runtime configuration
+  const query = getQuery(event); // Retrieve query parameters from the event
 
+  // Check if the 'code' parameter is missing in the query
   if (!query.code) {
     return {
-      error: "No code",
+      error: "No code", // Return an error if 'code' parameter is missing
     };
   }
+
+  // Construct parameters for GitHub OAuth access token request
   const params = {
     client_id: config.public.GH_CLIENT_ID,
     client_secret: config.public.GH_CLIENT_SECRET,
     code: query.code
-  }
+  };
 
-  const data = await $fetch("https://github.com/login/oauth/access_token",
-    {
-      params: params,
-      headers: {
-        "Accept": "application/json",
-        "Accept-Encoding": "application/json",
-      },
-    })
+  // Make a request to GitHub OAuth to exchange code for access token
+  const data = await $fetch("https://github.com/login/oauth/access_token", {
+    params: params,
+    headers: {
+      "Accept": "application/json",
+      "Accept-Encoding": "application/json",
+    },
+  });
 
+  // Check if access_token is present in the response data
   if (data.access_token) {
-    let access_token :string ;
+    const access_token = data.access_token; // Extract the access token from response
 
-    access_token = data.access_token;
+    // Retrieve Supabase user information
+    const user = await serverSupabaseUser(event);
 
-    const user = await serverSupabaseUser(event)
-
+    // Make a request to fetch GitHub user details using the access token
     const response = await $fetch("https://api.github.com/user", {
       headers: {
         "Authorization": `Bearer ${access_token}`,
         "Accept": "application/json",
         "Accept-Encoding": "application/json",
       },
-    })
+    });
 
-    registerUser(user.id, access_token, user.user_metadata.user_name,user.user_metadata.avatar_url)
+    // Register the user with the retrieved GitHub details
+    registerUser(
+      user.id,
+      access_token,
+      user.user_metadata.user_name,
+      user.user_metadata.avatar_url
+    );
 
+    // Return the access token and GitHub username in the response
     return {
       access_token: data.access_token,
-      username : response.login,
+      username: response.login,
     };
   }
+
+  // Return an error response if access_token is not available
   return {
     access_token: "error"
   };
