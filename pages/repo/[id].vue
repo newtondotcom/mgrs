@@ -46,8 +46,8 @@ async function upsertSecret(secret_name : string, secret_value : string) {
       secret_name: secret_name
     })
   })
-  if (response.status === 201) {
-    console.log('Secret added')
+  if (response.status !== 204) {
+    console.log('Error upserting secret:', response)
   }
 }
 
@@ -160,7 +160,6 @@ async function readFileContents(file: Blob) {
       return { name, value };
     });
     secrets.forEach(async (secret: { name: string; value: string; }) => {
-      console.log(secret?.name, secret?.value);
       await addSecret(secret.name, secret.value);
     });
   };
