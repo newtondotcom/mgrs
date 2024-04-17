@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@nuxt/ui": "^2.14.2",
+    "@nuxtjs/plausible": "^1.0.0",
     "@octokit/core": "^6.0.1",
     "@prisma/client": "5.12.1",
     "@types/libsodium-wrappers": "^0.7.13",

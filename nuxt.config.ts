@@ -8,7 +8,7 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ['@nuxtjs/supabase', '@nuxt/ui'],
+  modules: ['@nuxtjs/supabase', '@nuxt/ui', "@nuxtjs/plausible"],
   supabase: {
     redirect: false,
   },
@@ -41,5 +41,8 @@ export default defineNuxtConfig({
   tailwindcss: {
     viewer: false,
   },
+  plausible: {
+    //ignoredHostnames: ['localhost'],
+    apiHost : 'https://plaunwt.duckdns.org'
+  },
 })
-

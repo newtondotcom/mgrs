@@ -8,6 +8,9 @@ dependencies:
   '@nuxt/ui':
     specifier: ^2.14.2
     version: 2.15.2(nuxt@3.11.2)(vite@5.2.9)(vue@3.4.23)
+  '@nuxtjs/plausible':
+    specifier: ^1.0.0
+    version: 1.0.0
   '@octokit/core':
     specifier: ^6.0.1
     version: 6.1.2
@@ -423,6 +426,10 @@ packages:
       '@babel/helper-string-parser': 7.24.1
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
+
+  /@barbapapazes/plausible-tracker@0.4.0:
+    resolution: {integrity: sha512-4hhXK62ORb4feJfjnIILXRnb6xfejHM6yvGCid6MwNdKiQyj6YLW0M779zXLH5IBS4mQObmrNul2HUleeavSKw==}
+    dev: false
 
   /@cloudflare/kv-asset-handler@0.3.1:
     resolution: {integrity: sha512-lKN2XCfKCmpKb86a1tl4GIwsJYDy9TGuwjhDELLmpKygQhw8X2xR4dusgpC5Tg7q1pB96Eb0rBo81kxSILQMwA==}
@@ -1298,6 +1305,17 @@ packages:
       pathe: 1.1.2
       pkg-types: 1.0.3
       semver: 7.6.0
+    transitivePeerDependencies:
+      - rollup
+      - supports-color
+    dev: false
+
+  /@nuxtjs/plausible@1.0.0:
+    resolution: {integrity: sha512-2K0/AbPJAEr3yMA8oDD0I6WB+SXs/YlF297azjR5eSZVQjuimDAwLf4bEXk9ilbrzoMFmm0Tpzn4CC6f0rISBA==}
+    dependencies:
+      '@barbapapazes/plausible-tracker': 0.4.0
+      '@nuxt/kit': 3.11.2
+      defu: 6.1.4
     transitivePeerDependencies:
       - rollup
       - supports-color
