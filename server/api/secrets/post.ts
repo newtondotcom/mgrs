@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     const username = user.user_metadata.user_name
     const body = await readBody(event)
     const repoName = body.repo_name;
-    const secretName = body.secret_name;
+    const secretName = body.secret_name.toUpperCase();
     const value = body.secret_value;
     console.log('repoName :', repoName, ', secretName :', secretName, ', value :', value)
     const publicKey = await getPublicKeySaved(user.id, repoName);
