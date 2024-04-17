@@ -34,7 +34,6 @@ export async function upsertPublicKey(user_id: string, repository_name: string, 
 }
 
 export async function upsertSecret(user_id: string, repository_name: string, secret_name: string, secret_value: string) {
-    console.log(user_id, repository_name, secret_name, secret_value)
     const repository_id = await getRepoIdfromRepoName(user_id, repository_name)
     return await prisma.secret.upsert({
         where: {
