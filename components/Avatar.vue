@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import getRedirectUrl from './redirectUri';
+
 const user = useSupabaseUser();
 const supabase = useSupabaseClient()
 const avatar_url = ref('');
@@ -6,8 +8,8 @@ const username = ref('');
 
 async function refreshInfos() {
   const { data } = await useFetch("/api/infos");
-  avatar_url.value = data.value?.avatar_url;
-  username.value = data.value?.username;
+  avatar_url.value = data.value?.avatar_url || '';
+  username.value = data.value?.username || '';
 }
 
 const userConnected = ref(false);
@@ -30,8 +32,15 @@ async function revokePermissions() {
   navigateTo('/');
 }
 
+const signInWithGithub = async () => {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'github',
+    options: { redirectTo: getRedirectUrl() }
+  })
+  if (error) console.log(error)
+}
 async function goSignIn() {
-  navigateTo('/login');
+  await signInWithGithub();
 }
 
 const items = [
@@ -49,24 +58,6 @@ const items = [
     icon: 'i-heroicons-arrow-left-end-on-rectangle-16-solid',
     click: logout
   }]
-  /*
-  {
-    label: 'Duplicate',
-    icon: 'i-heroicons-document-duplicate-20-solid',
-    shortcuts: ['D'],
-    disabled: true
-  }], [{
-    label: 'Archive',
-    icon: 'i-heroicons-archive-box-20-solid'
-  }, {
-    label: 'Move',
-    icon: 'i-heroicons-arrow-right-circle-20-solid'
-  }], [{
-    label: 'Delete',
-    icon: 'i-heroicons-trash-20-solid',
-    shortcuts: ['⌘', 'D']
-  }]
-  */
 ]
 </script>
 
