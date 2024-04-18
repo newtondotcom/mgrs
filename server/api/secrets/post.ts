@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
   const encryptedPrisma = await encryptSecretGhPrisma(value, config.public.ENCRYPTION_KEY);
   
   // Upsert (insert or update) the secret in the database
-  await upsertSecret(user.id, repoName, secretName, encryptedPrisma);
+  await upsertSecret(user?.id as string, repoName, secretName, encryptedPrisma);
   
   // Return the response from GitHub API
   return response;
