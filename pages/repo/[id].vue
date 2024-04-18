@@ -1,7 +1,9 @@
 <script setup lang="ts">
 const toast = useToast()
 const route = useRoute()
+
 const name = route.params.id
+
 const links = [{
   label: 'Home',
   icon: 'i-heroicons-home',
@@ -18,38 +20,52 @@ const links = [{
 const noSecret = ref(false)
 const isOpen = ref(false)
 const modalDelete = ref(false)
-
 let modalValue = ""
 let modalName = ""
+const datas = ref<{ name: string; visibility: string; value: string }[]>([]);
 
-const datas = ref([]);
 
 async function getSecretsList() {
   try {
-    const tempSecrets = await $fetch(`/api/secrets/get?name=${name}`)
-    datas.value = tempSecrets;
+    const tempSecrets = await $fetch(`/api/secrets/get?name=${name}`);
+
+    // Transform `tempSecrets` into the expected type `{ name: string; visibility: string; value: string; }[]`
+    const transformedSecrets: { name: string; visibility: string; value: string; }[] = tempSecrets.map(secret => ({
+      name: secret.name,
+      visibility: secret.visibility,
+      value: secret.value
+    }));
+
+    // Assign the transformed secrets to `datas.value`
+    datas.value = transformedSecrets;
+
+    // Check if `datas.value` is empty
     if (datas.value.length === 0) {
-      noSecret.value = true
+      noSecret.value = true;
+    } else {
+      noSecret.value = false;
     }
   } catch (error) {
-    console.error('Error fetching secrets:', error)
+    console.error('Error fetching secrets:', error);
   }
 }
 
-async function upsertSecret(secret_name : string, secret_value : string) {
-  const response = await $fetch('/api/secrets/post', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      repo_name: name,
-      secret_value: secret_value,
-      secret_name: secret_name
-    })
-  })
-  if (response.status !== 204) {
-    console.log('Error upserting secret:', response)
+
+async function upsertSecret(secret_name: string, secret_value: string) {
+  try {
+    const response = await $fetch('/api/secrets/post', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        secret_name: secret_name,
+        secret_value: secret_value
+      })
+    });
+  } catch (error) {
+    console.error('Error upserting secret:', error);
   }
 }
+
 
 async function removeSecret() {
   await $fetch(`/api/secrets/delete?name=${name}&secret=${modalName}`)
@@ -58,7 +74,7 @@ async function removeSecret() {
   if (datas.value.length === 0) {
     noSecret.value = true
   }
-  toast.add({ title: 'Success', description: 'Secret deleted', status: 'success' })
+  toast.add({ title: 'Success', description: 'Secret deleted' })
 }
 
 async function openDeleteModal(data: { name: string; }) {
@@ -142,19 +158,23 @@ async function handleFileSelection() {
   input.type = 'file';
   input.accept = '.env';
   input.click();
-  input.onchange = (event) => {
-    const file = event.target?.files[0];
+
+  // Use addEventListener instead of onchange
+  input.addEventListener('change', (event) => {
+    const target = event.target as HTMLInputElement; // Assert event.target as HTMLInputElement
+    const file = target.files?.[0]; // Access files property safely using optional chaining
     if (file) {
       readFileContents(file);
     }
-  };
+  });
 }
 
 async function readFileContents(file: Blob) {
   const reader = new FileReader();
   reader.onload = (e) => {
     const contents = e.target?.result;
-    const secrets = contents?.split('\n').map((line:string) => {
+    const contentsString = contents as string;
+    const secrets = contentsString.split('\n').map((line: string) => {
       let [name, value] = line.split('=');
       value = value.replaceAll(`"`, ``);
       return { name, value };
@@ -236,14 +256,12 @@ watch([datas], () => {
       </div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 lg:py-[20px] lg:px-[100px]">
-      <div
-v-if="noSecret"
+      <div v-if="noSecret"
         class="border text-gray-900 border-gray-300 bg-gray-100 p-4 rounded-md mb-4 dark:text-white dark:bg-gray-600 dark:border-gray-800">
         This repo has no secrets
       </div>
       <template v-if="datas.length === 0 && !noSecret">
-        <div
-v-for="n in 6" :key="n"
+        <div v-for="n in 6" :key="n"
           class="border border-gray-300 bg-gray-100 p-4 rounded-md mb-4 dark:bg-gray-600 dark:border-gray-800">
           <div class="flex items-center space-x-4">
             <USkeleton class="h-12 w-full px-4" />
@@ -251,30 +269,24 @@ v-for="n in 6" :key="n"
         </div>
       </template>
       <template v-else>
-        <div
-v-for="data in datas" :key="data.name"
+        <div v-for="data in datas" :key="data.name"
           class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer mb-4 dark:text-white dark:bg-gray-600 dark:border-gray-800">
           {{ data.name }}
           <div class="flex flex-row justify-center mt-2">
-            <UButton
-class="mx-1" icon="i-heroicons-eye-16-solid" size="sm" color="primary"
-              square variant="solid" @click="changeVisibility(data)" />
-            <UInput
-:key="data.name" v-model="data.value" :type="data.visibility" color="primary" variant="outline"
+            <UButton class="mx-1" icon="i-heroicons-eye-16-solid" size="sm" color="primary" square variant="solid"
+              @click="changeVisibility(data)" />
+            <UInput :key="data.name" v-model="data.value" :type="data.visibility" color="primary" variant="outline"
               placeholder="Search..." />
-            <UButton
-class="ml-1" icon="i-heroicons-check-16-solid" size="sm" color="primary"
-              square variant="solid" @click="updateValueToGithub(data)" />
-            <UButton
-class="ml-1" icon="i-heroicons-trash-solid" size="sm" color="primary"
-              square variant="solid" @click="openDeleteModal(data)" />
+            <UButton class="ml-1" icon="i-heroicons-check-16-solid" size="sm" color="primary" square variant="solid"
+              @click="updateValueToGithub(data)" />
+            <UButton class="ml-1" icon="i-heroicons-trash-solid" size="sm" color="primary" square variant="solid"
+              @click="openDeleteModal(data)" />
           </div>
         </div>
       </template>
       <div
         class="border border-gray-300 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer mb-4 flex justify-center items-center dark:text-white dark:bg-gray-600 dark:border-gray-800">
-        <UButton
-class="flex" icon="i-heroicons-plus-16-solid" size="sm" color="primary" square variant="solid"
+        <UButton class="flex" icon="i-heroicons-plus-16-solid" size="sm" color="primary" square variant="solid"
           @click="isOpen = true" />
       </div>
     </div>
