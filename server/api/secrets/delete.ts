@@ -8,10 +8,10 @@ export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event);
 
     // Retrieve the GitHub token for the user
-    const token = await getToken(user.id);
+    const token = await getToken(user?.id as string);
 
     // Extract user metadata
-    const username = user.user_metadata.user_name;
+    const username = user?.user_metadata.user_name;
 
     // Extract query parameters from the event
     const query = getQuery(event);
@@ -28,8 +28,8 @@ export default defineEventHandler(async (event) => {
     // Make a request to delete the specified secret from the repository
     await octokit.request('DELETE /repos/{owner}/{repo}/actions/secrets/{secret_name}', {
         owner: username,
-        repo: repoName,
-        secret_name: secretName,
+        repo: repoName as string,
+        secret_name: secretName as string,
         headers: {
             'X-GitHub-Api-Version': '2022-11-28'
         }
