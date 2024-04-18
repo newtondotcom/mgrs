@@ -1,9 +1,6 @@
 <script setup lang="ts">
 const toast = useToast()
 
-const page = ref(1)
-const pagecount = ref(20)
-
 const links = [{
   label: 'Home',
   icon: 'i-heroicons-home',
@@ -14,8 +11,10 @@ const links = [{
   to: '/repos'
 }]
 
-const datas = ref([]);
-const printedDatas = ref([]);
+const page = ref(1)
+const pagecount = ref(20)
+const datas = ref<{ name: string; id: number }[]>([]);
+const printedDatas = ref<{ name: string; id: number }[]>([]);
 const search = ref('')
 const length = ref(0)
 const loading = ref(true)
@@ -62,15 +61,16 @@ onMounted(async () => {
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:py-[40px] lg:px-[100px]">
       <template v-if="loading">
-        <div v-for="n in pagecount" :key="n" class="border border-gray-300 bg-gray-100 p-4 rounded-md dark:bg-gray-600 dark:border-gray-800">
+        <div v-for="n in pagecount" :key="n"
+          class="border border-gray-300 bg-gray-100 p-4 rounded-md dark:bg-gray-600 dark:border-gray-800">
           <div class="flex items-center space-x-4 ">
             <USkeleton class="h-4 w-full" />
           </div>
         </div>
       </template>
       <template v-else>
-        <div
-v-for="data in printedDatas" :key="data.id" class="border border-gray-300 text-gray-900 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer dark:text-white dark:bg-gray-600 dark:border-gray-800"
+        <div v-for="data in printedDatas" :key="data.id"
+          class="border border-gray-300 text-gray-900 bg-gray-100 hover:bg-gray-200 hover:border-gray-400 p-4 rounded-md cursor-pointer dark:text-white dark:bg-gray-600 dark:border-gray-800"
           @click="navigateTo('/repo/' + data.name)">
           <div class="flex items-center space-x-4">
             <div class="text-left">
@@ -81,8 +81,7 @@ v-for="data in printedDatas" :key="data.id" class="border border-gray-300 text-g
       </template>
     </div>
     <div class="flex justify-center mt-2 mb-6">
-      <UPagination
-v-model="page" :page-count="pagecount" :total="length"
+      <UPagination v-model="page" :page-count="pagecount" :total="length"
         :ui="{ rounded: 'first-of-type:rounded-s-md last-of-type:rounded-e-md' }" />
     </div>
   </div>
