@@ -82,7 +82,7 @@ export async function mergeSecretsGhPrisma(tempSecrets: any[], savedSecrets: any
     }
 }
 
-export async function getPublicKeySaved(user_id: string, repository_name: string) {
+export async function getPublicKeySaved(user_id: string, repository_name: string) :  Promise<{public_key : string, key_id : string }>  {
     const repository_id = await getRepoIdfromRepoName(user_id, repository_name)
     return await prisma.repository.findUnique({
         where: {

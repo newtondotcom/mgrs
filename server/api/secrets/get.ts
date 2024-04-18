@@ -17,10 +17,10 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
 
   // Retrieve or refresh the user's token
-  token = (await getToken(user.id)) || "";
-  user_id = user.id;
-  const username = user.user_metadata.user_name;
-  const repoName = getQuery(event).name;
+  token = (await getToken(user?.id as string)) || "";
+  user_id = user?.id as string;
+  const username = user?.user_metadata.user_name;
+  const repoName = getQuery(event).name as string;
 
   // Initialize Octokit with the user's token
   octokit = new Octokit({ auth: token });
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
   // Merge and decrypt secrets for the client
   const mergedSecrets = tempSecrets.map(secret => {
     const savedSecret = savedSecrets.find(savedSecret => savedSecret.name === secret.name);
-    const value = savedSecret ? decryptSecretGhPrisma(savedSecret.value, config.public.ENCRYPTION_KEY) : "";
+    const value = savedSecret && savedSecret.value ? decryptSecretGhPrisma(savedSecret.value, config.public.ENCRYPTION_KEY) : "";
     
     return {
       name: secret.name,

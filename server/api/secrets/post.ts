@@ -12,10 +12,10 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
   
   // Retrieve the user's access token
-  const token = await getToken(user.id);
+  const token = await getToken(user?.id as string);
   
   // Extract user details
-  const username = user.user_metadata.user_name;
+  const username = user?.user_metadata.user_name;
   
   // Read the request body
   const body = await readBody(event);
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
   const value = body.secret_value;
   
   // Fetch the public key associated with the repository
-  const publicKey = await getPublicKeySaved(user.id, repoName);
+  const publicKey : {public_key : string, key_id : string } = await getPublicKeySaved(user?.id as string, repoName);
   
   // Encrypt the secret value using the repository's public key
   const encryptedGh = await cryptSecretGh(value, publicKey.public_key);
