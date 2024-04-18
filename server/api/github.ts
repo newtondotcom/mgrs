@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
   };
 
   // Make a request to GitHub OAuth to exchange code for access token
-  const data = await $fetch("https://github.com/login/oauth/access_token", {
+  const data : {access_token : string | null} = await $fetch("https://github.com/login/oauth/access_token", {
     params: params,
     headers: {
       "Accept": "application/json",
@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
     const user = await serverSupabaseUser(event);
 
     // Make a request to fetch GitHub user details using the access token
-    const response = await $fetch("https://api.github.com/user", {
+    const response : {login : string} = await $fetch("https://api.github.com/user", {
       headers: {
         "Authorization": `Bearer ${access_token}`,
         "Accept": "application/json",
@@ -45,19 +45,22 @@ export default defineEventHandler(async (event) => {
       },
     });
 
+    if (!response.login) {
+      return {
+        error: "No username",
+      };
+    }
+
     // Register the user with the retrieved GitHub details
     registerUser(
-      user.id,
+      user?.id as string,
       access_token,
-      user.user_metadata.user_name,
-      user.user_metadata.avatar_url
+      user?.user_metadata.user_name as string,
+      user?.user_metadata.avatar_url
     );
 
     // Return the access token and GitHub username in the response
-    return {
-      access_token: data.access_token,
-      username: response.login,
-    };
+    return {success: true}
   }
 
   // Return an error response if access_token is not available
