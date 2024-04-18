@@ -1,16 +1,33 @@
 <script setup lang="ts">
+import getRedirectUrl from '~/components/redirectUri';
+
 const user = useSupabaseUser();
-function goDashoard() {
+const supabase = useSupabaseClient()
+
+async function goDashoard() {
     if (user.value) {
         navigateTo('/repos')
     } else {
-        navigateTo('/login')
+        await signInWithGithub();
     }
 }
 
-const isDarkMode = ref(navigator?.userAgent.includes('prefers-color-scheme: dark'))
+const signInWithGithub = async () => {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'github',
+    options: { redirectTo: getRedirectUrl() }
+  })
+  if (error) console.log(error)
+}
 
-const imageSrc = isDarkMode.value ? '/secrets_dark.png' : '/secrets.png'
+// Reactive variable for dark mode state
+const isDarkMode = ref(window.matchMedia('(prefers-color-scheme: dark)').matches);
+let imageSrc: string = isDarkMode.value ? '/secrets.png' : '/secrets_dark.png';
+
+// Watch for changes in dark mode preference
+watch(() => isDarkMode.value, (newValue) => {
+  imageSrc = newValue ? '/secrets.png' : '/secrets_dark.png';
+});
 </script>
 
 <template>
