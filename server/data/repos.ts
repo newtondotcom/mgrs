@@ -14,7 +14,7 @@ export async function RepoRenamedAndCreateInPrisma(ghRepos :any[], user_id : str
         if (savedRepo) {
            if (savedRepo.repository_name !== ghRepo.name) {
                await prisma.repository.update({
-                   where: { repository_id: savedRepo.id },
+                   where: { repository_id: savedRepo.repository_id },
                    data: { repository_name: ghRepo.name },
                })
            }
