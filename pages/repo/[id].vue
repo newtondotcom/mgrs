@@ -58,7 +58,8 @@ async function upsertSecret(secret_name: string, secret_value: string) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         secret_name: secret_name,
-        secret_value: secret_value
+        secret_value: secret_value,
+        repo_name: name
       })
     });
   } catch (error) {
