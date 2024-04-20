@@ -262,7 +262,7 @@ watch([datas], () => {
         This repo has no secrets
       </div>
       <template v-if="datas.length === 0 && !noSecret">
-        <div v-for="n in 6" :key="n"
+        <div v-for="n in 7" :key="n"
           class="border border-gray-300 bg-gray-100 p-4 rounded-md mb-4 dark:bg-gray-600 dark:border-gray-800">
           <div class="flex items-center space-x-4">
             <USkeleton class="h-12 w-full px-4" />
