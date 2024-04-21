@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
   
   // Extract required data from the request body
   const repoName = body.repo_name;
-  const secretName = body.secret_name.toUpperCase();
+  const secretName = body.secret_name.toUpperCase().replaceAll(`"`, '');
   const value = body.secret_value;
   
   // Fetch the public key associated with the repository
