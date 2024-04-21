@@ -191,7 +191,7 @@ async function generateEnvFile() {
   // Map datas.value to generate lines for the .env file
   const envFile = datas.value.map((data) => {
     let value = data.value;
-
+    value = value.replaceAll(`"`, ``);
     // Check if value is not a number (contains non-numeric characters)
     if (!/^-?\d+$/.test(value)) {
       // Remove surrounding quotes from the value
