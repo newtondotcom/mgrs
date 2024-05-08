@@ -1,4 +1,8 @@
 <script setup lang="ts">
+const user = useSupabaseUser()
+if (!user.value) {
+  navigateTo('/')
+}
 const toast = useToast()
 
 const links = [{
