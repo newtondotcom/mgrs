@@ -24,7 +24,10 @@ watch(user, async () => {
 }, { immediate: true });
 
 async function logout() {
-  await supabase.auth.signOut()
+  const { error } = await supabase.auth.signOut()
+  if (error) console.log(error)
+  const authCookie = useCookie("sb-access-token")
+  authCookie.value = null
   navigateTo('/');
 }
 
