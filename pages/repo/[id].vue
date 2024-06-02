@@ -302,10 +302,12 @@ watch([datas], () => {
       <UInput v-model="modalName" class="my-2" color="primary" variant="outline" placeholder="Name" />
       <UInput v-model="modalValue" class="my-2" type="password" color="primary" variant="outline" placeholder="Value" />
       <div class="flex justify-end">
-        <UButton @click="addSecret">
+        <UButton label="Yes" class="w-100" @click="addSecret">
+        <!--
           <template #leading>
             <div>Yes</div>
           </template>
+        -->
         </UButton>
         <UButton label="No" class="mx-2 px-4 py-2" @click="isOpen = false" />
       </div>
