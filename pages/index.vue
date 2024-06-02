@@ -27,7 +27,7 @@ let imageSrc: string = isDarkMode.value ? '/secrets.png' : '/secrets_dark.png';
 // Watch for changes in dark mode preference
 watch(() => isDarkMode.value, (newValue) => {
   imageSrc = newValue ? '/secrets.png' : '/secrets_dark.png';
-});
+}, { immediate: true });
 </script>
 
 <template>
