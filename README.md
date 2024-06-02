@@ -1,8 +1,6 @@
 # mgrs
 
-Manage Github Repositories Secrets
-
-> Currently, the hosted version is not working well because nuxt-supabase module doesn't support properly `signout` action. 
+Manage your Github Repositories Secrets
 
 ## why mrgs ?
 
