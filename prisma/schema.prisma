@@ -37,3 +37,8 @@ model Secret {
   @@id([name, repository_id])
 }
 
+model Bs {
+  id Int @id @default(autoincrement())
+  name String
+}
+
